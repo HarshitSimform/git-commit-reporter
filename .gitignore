@@ -68,3 +68,6 @@ Desktop.ini
 *.tgz
 *.zip
 *.tar.gz
+
+# Miscellaneous
+.html
