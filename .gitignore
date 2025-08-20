@@ -1,0 +1,70 @@
+# -------------------------
+# Node.js + TypeScript
+# -------------------------
+
+# Dependencies
+node_modules/
+
+# Build / output
+dist/
+build/
+out/
+.tmp/
+temp/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+
+# Env files
+.env
+.env.*.local
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# IDEs / Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# Optional lock files (uncomment if you don’t want them tracked)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Archives
+*.tgz
+*.zip
+*.tar.gz
