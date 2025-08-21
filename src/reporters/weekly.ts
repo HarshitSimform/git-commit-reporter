@@ -2,7 +2,11 @@ import { GitService } from "../services/git";
 import { GitHubService } from "../services/github";
 import { ReportService } from "../services/report";
 import { getDateRange } from "../utils/date";
-import { aggregateCommitsByCategory } from "../utils/categories";
+import {
+  aggregateCommitsByCategory,
+  categorizeCommit,
+  groupCommitsByBranch,
+} from "../utils/categories";
 import {
   aggregateContributors,
   getTopContributors,
@@ -17,12 +21,20 @@ export async function generateWeeklyReport(repoPath?: string) {
   const { start, end } = getDateRange(7);
   const commits = await gitService.getCommits(start, end);
 
+  // Apply category to each commit
+  commits.forEach((commit) => {
+    commit.category = categorizeCommit(commit.message);
+  });
+
   // Analyze commit categories
   const categories = aggregateCommitsByCategory(commits);
 
   // Generate leaderboard
   const allContributors = aggregateContributors(commits);
   const leaderboard = getTopContributors(allContributors, 10); // Top 10 contributors
+
+  // Group commits by branch
+  const branchGroups = groupCommitsByBranch(commits);
 
   // Generate PR data (if GitHub repo is detected and token is available)
   let prSummary;
@@ -55,6 +67,7 @@ export async function generateWeeklyReport(repoPath?: string) {
     categories,
     leaderboard,
     prSummary,
+    branchGroups,
   };
 
   const options: ReportOptions = {

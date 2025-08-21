@@ -1,4 +1,4 @@
-import { GitCommit, CommitCategory } from "../types";
+import { GitCommit, CommitCategory, BranchGroup } from "../types";
 
 export function categorizeCommit(message: string): string {
   const normalizedMessage = message.toLowerCase().trim();
@@ -123,4 +123,33 @@ export function generateCategoryChartData(categories: CommitCategory[]) {
       },
     ],
   };
+}
+
+export function groupCommitsByBranch(commits: GitCommit[]): BranchGroup[] {
+  const branchMap: Record<string, GitCommit[]> = {};
+
+  // Group commits by branch
+  commits.forEach((commit) => {
+    const branch = commit.branch || "unknown";
+    if (!branchMap[branch]) {
+      branchMap[branch] = [];
+    }
+    branchMap[branch].push(commit);
+  });
+
+  // Convert to BranchGroup array and sort
+  return Object.entries(branchMap)
+    .map(([branch, branchCommits]) => ({
+      branch,
+      commits: branchCommits.sort(
+        (a, b) => b.date.getTime() - a.date.getTime()
+      ),
+      count: branchCommits.length,
+    }))
+    .sort((a, b) => {
+      // Sort: main/master first, then by commit count
+      if (a.branch === "main" || a.branch === "master") return -1;
+      if (b.branch === "main" || b.branch === "master") return 1;
+      return b.count - a.count;
+    });
 }

@@ -1,6 +1,7 @@
 import {
   categorizeCommit,
   aggregateCommitsByCategory,
+  groupCommitsByBranch,
 } from "../../src/utils/categories";
 import { GitCommit } from "../../src/types";
 
@@ -156,6 +157,94 @@ describe("Commit Categories", () => {
       expect(categories[0].count).toBe(3);
       expect(categories[1].name).toBe("Docs");
       expect(categories[1].count).toBe(1);
+    });
+  });
+
+  describe("groupCommitsByBranch", () => {
+    test("should group commits by branch correctly", () => {
+      const mockCommits: GitCommit[] = [
+        {
+          hash: "1",
+          date: new Date("2023-08-15"),
+          message: "feat: add login",
+          author_name: "Alice",
+          author_email: "alice@test.com",
+          files: [],
+          branch: "main",
+        },
+        {
+          hash: "2",
+          date: new Date("2023-08-16"),
+          message: "fix: bug fix",
+          author_name: "Bob",
+          author_email: "bob@test.com",
+          files: [],
+          branch: "feature/auth",
+        },
+        {
+          hash: "3",
+          date: new Date("2023-08-17"),
+          message: "docs: update docs",
+          author_name: "Alice",
+          author_email: "alice@test.com",
+          files: [],
+          branch: "main",
+        },
+      ];
+
+      const branchGroups = groupCommitsByBranch(mockCommits);
+
+      expect(branchGroups).toHaveLength(2);
+      expect(branchGroups[0].branch).toBe("main");
+      expect(branchGroups[0].count).toBe(2);
+      expect(branchGroups[1].branch).toBe("feature/auth");
+      expect(branchGroups[1].count).toBe(1);
+    });
+
+    test("should handle commits without branch", () => {
+      const mockCommits: GitCommit[] = [
+        {
+          hash: "1",
+          date: new Date(),
+          message: "test commit",
+          author_name: "Alice",
+          author_email: "alice@test.com",
+          files: [],
+        },
+      ];
+
+      const branchGroups = groupCommitsByBranch(mockCommits);
+
+      expect(branchGroups).toHaveLength(1);
+      expect(branchGroups[0].branch).toBe("unknown");
+    });
+
+    test("should sort branches with main/master first", () => {
+      const mockCommits: GitCommit[] = [
+        {
+          hash: "1",
+          date: new Date(),
+          message: "feat commit",
+          author_name: "Alice",
+          author_email: "alice@test.com",
+          files: [],
+          branch: "feature/test",
+        },
+        {
+          hash: "2",
+          date: new Date(),
+          message: "main commit",
+          author_name: "Bob",
+          author_email: "bob@test.com",
+          files: [],
+          branch: "main",
+        },
+      ];
+
+      const branchGroups = groupCommitsByBranch(mockCommits);
+
+      expect(branchGroups[0].branch).toBe("main");
+      expect(branchGroups[1].branch).toBe("feature/test");
     });
   });
 });

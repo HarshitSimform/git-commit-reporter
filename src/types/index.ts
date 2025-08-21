@@ -6,6 +6,13 @@ export interface GitCommit {
   author_email: string;
   files: string[];
   category?: string;
+  branch?: string;
+}
+
+export interface BranchGroup {
+  branch: string;
+  commits: GitCommit[];
+  count: number;
 }
 
 export interface ReportOptions {
@@ -74,4 +81,5 @@ export interface ReportData {
   categories?: CommitCategory[];
   leaderboard?: LeaderboardEntry[];
   prSummary?: PRSummary;
+  branchGroups?: BranchGroup[];
 }

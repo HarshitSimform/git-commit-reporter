@@ -14,16 +14,60 @@ export class GitService {
     const logs = await this.git.log([
       `--since=${since.toISOString()}`,
       `--until=${until.toISOString()}`,
+      "--all", // Get commits from all branches
     ]);
 
-    return logs.all.map((commit) => ({
-      hash: commit.hash,
-      date: new Date(commit.date),
-      message: commit.message,
-      author_name: commit.author_name,
-      author_email: commit.author_email,
-      files: [],
-    }));
+    const commits: GitCommit[] = [];
+
+    for (const commit of logs.all) {
+      const branch = await this.getBranchForCommit(commit.hash);
+
+      commits.push({
+        hash: commit.hash,
+        date: new Date(commit.date),
+        message: commit.message,
+        author_name: commit.author_name,
+        author_email: commit.author_email,
+        files: [],
+        branch: branch,
+      });
+    }
+
+    return commits;
+  }
+
+  private async getBranchForCommit(commitHash: string): Promise<string> {
+    try {
+      const branches = await this.git.raw([
+        "branch",
+        "--contains",
+        commitHash,
+        "--all",
+      ]);
+
+      const branchLines = branches
+        .split("\n")
+        .map((line) => line.trim().replace(/^\*\s*/, ""))
+        .filter((line) => line && !line.includes("HEAD"))
+        .map((line) => {
+          if (line.startsWith("remotes/origin/")) {
+            return line.replace("remotes/origin/", "");
+          }
+          return line;
+        })
+        .filter((branch) => branch !== "HEAD" && !branch.includes("->"));
+
+      const mainBranches = branchLines.filter(
+        (b) => b === "main" || b === "master"
+      );
+
+      return mainBranches.length > 0
+        ? mainBranches[0]
+        : branchLines[0] || "unknown";
+    } catch (error) {
+      console.warn(`Failed to get branch for commit ${commitHash}:`, error);
+      return "unknown";
+    }
   }
 
   async getGitHubRepoInfo(): Promise<{ owner: string; repo: string } | null> {

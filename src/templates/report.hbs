@@ -200,6 +200,50 @@
             font-weight: bold;
             color: #059669;
         }
+        /* Branch grouping styles */
+        .branch-section {
+            margin: 30px 0;
+        }
+        .branch-group {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .branch-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 20px;
+            margin: 0;
+        }
+        .branch-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+        .branch-count {
+            margin-left: auto;
+            font-size: 0.9em;
+            opacity: 0.9;
+            font-weight: normal;
+        }
+        .branch-commits {
+            padding: 0;
+        }
+        .branch-commits .commit {
+            margin: 0;
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            border-radius: 0;
+            background-color: #fafafa;
+        }
+        .branch-commits .commit:last-child {
+            border-bottom: none;
+        }
+        .branch-commits .commit:hover {
+            background-color: #f5f5f5;
+        }
     </style>
 </head>
 <body>
@@ -218,6 +262,12 @@
                 <div class="stat-number">{{categories.length}}</div>
                 <div>Categories</div>
             </div>
+            {{#if branchGroups}}
+            <div class="stat-card">
+                <div class="stat-number">{{branchGroups.length}}</div>
+                <div>Active Branches</div>
+            </div>
+            {{/if}}
         </div>
 
         {{#if categories}}
@@ -387,6 +437,35 @@
         </div>
         {{/if}}
         
+        {{#if branchGroups}}
+        <div class="branch-section">
+            <h2>Commits by Branch</h2>
+            {{#each branchGroups}}
+            <div class="branch-group">
+                <div class="branch-header">
+                    <h3>🌿 Branch: {{branch}} <span class="branch-count">({{count}} commits)</span></h3>
+                </div>
+                <div class="branch-commits">
+                    {{#each commits}}
+                    <div class="commit">
+                        <div class="commit-message">
+                            {{message}}
+                            {{#if category}}
+                            <span class="category-badge" style="background-color: {{getCategoryColor category}};">{{category}}</span>
+                            {{/if}}
+                        </div>
+                        <div class="commit-meta">
+                            <strong>Author:</strong> {{author_name}} ({{author_email}}) |
+                            <strong>Date:</strong> {{date}} |
+                            <strong>Hash:</strong> {{hash}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
         <h2>Recent Commits</h2>
         {{#each commits}}
         <div class="commit">
@@ -403,6 +482,40 @@
             </div>
         </div>
         {{/each}}
+        {{/if}}
+
+        {{#if branches}}
+        <div class="branch-section">
+            <h2>Branch-wise Commit Report</h2>
+            {{#each branches}}
+            <div class="branch-group">
+                <div class="branch-header">
+                    <h3>
+                        {{name}}
+                        <span class="branch-count">Commits: {{commit_count}}</span>
+                    </h3>
+                </div>
+                <div class="branch-commits">
+                    {{#each commits}}
+                    <div class="commit">
+                        <div class="commit-message">
+                            {{message}}
+                            {{#if category}}
+                            <span class="category-badge" style="background-color: {{getCategoryColor category}};">{{category}}</span>
+                            {{/if}}
+                        </div>
+                        <div class="commit-meta">
+                            <strong>Author:</strong> {{author_name}} ({{author_email}}) |
+                            <strong>Date:</strong> {{date}} |
+                            <strong>Hash:</strong> {{hash}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
     </div>
 
     {{#if categories}}

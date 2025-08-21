@@ -1,7 +1,11 @@
 import { GitService } from "../services/git";
 import { ReportService } from "../services/report";
 import { getDateRange } from "../utils/date";
-import { aggregateCommitsByCategory } from "../utils/categories";
+import {
+  aggregateCommitsByCategory,
+  categorizeCommit,
+  groupCommitsByBranch,
+} from "../utils/categories";
 import {
   aggregateContributors,
   getTopContributors,
@@ -15,6 +19,11 @@ export async function generateDailyReport(repoPath?: string) {
   const { start, end } = getDateRange(1);
   const commits = await gitService.getCommits(start, end);
 
+  // Apply category to each commit
+  commits.forEach((commit) => {
+    commit.category = categorizeCommit(commit.message);
+  });
+
   // Analyze commit categories
   const categories = aggregateCommitsByCategory(commits);
 
@@ -22,12 +31,16 @@ export async function generateDailyReport(repoPath?: string) {
   const allContributors = aggregateContributors(commits);
   const leaderboard = getTopContributors(allContributors, 10); // Top 10 contributors
 
+  // Group commits by branch
+  const branchGroups = groupCommitsByBranch(commits);
+
   const reportData = {
     commits,
     totalCommits: commits.length,
     dateRange: { start, end },
     categories,
     leaderboard,
+    branchGroups,
   };
 
   const options: ReportOptions = {
