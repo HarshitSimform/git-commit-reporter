@@ -9,13 +9,17 @@
     "copy-templates": "mkdir -p dist/templates && cp src/templates/*.hbs dist/templates/",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "config:check": "ts-node -e \"import {config, hasConfig} from './src/config'; console.log('Config status:'); console.log('OpenAI API Key:', hasConfig('openai.apiKey') ? 'Present' : 'Missing'); console.log('Hugging Face Token:', hasConfig('huggingface.token') ? 'Present' : 'Missing'); console.log('GitHub Token:', hasConfig('github.token') ? 'Present' : 'Missing');\""
   },
   "dependencies": {
+    "@huggingface/inference": "^4.7.1",
     "@octokit/rest": "^22.0.0",
     "chart.js": "^4.5.0",
     "date-fns": "^2.30.0",
+    "dotenv": "^17.2.1",
     "handlebars": "^4.7.8",
+    "openai": "^5.13.1",
     "simple-git": "^3.19.1"
   },
   "devDependencies": {

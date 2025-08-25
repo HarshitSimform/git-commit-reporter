@@ -1,6 +1,7 @@
 import { GitService } from "../services/git";
 import { GitHubService } from "../services/github";
 import { ReportService } from "../services/report";
+import { AIService } from "../services/ai";
 import { getDateRange } from "../utils/date";
 import {
   aggregateCommitsByCategory,
@@ -13,6 +14,24 @@ import {
 } from "../utils/leaderboard";
 import { aggregatePRData, getTopReviewers } from "../utils/pr-analysis";
 import { ReportOptions } from "../types";
+import { WeeklySummaryData } from "../services/ai";
+
+function prepareWeeklySummaryData(
+  commits: any[],
+  categories: any[],
+  leaderboard: any[],
+  branchGroups: any[],
+  start: Date,
+  end: Date
+): WeeklySummaryData {
+  return {
+    totalCommits: commits.length,
+    categories,
+    topContributors: leaderboard,
+    branchGroups,
+    dateRange: { start, end },
+  };
+}
 
 export async function generateWeeklyReport(repoPath?: string) {
   const gitService = new GitService(repoPath);
@@ -60,6 +79,23 @@ export async function generateWeeklyReport(repoPath?: string) {
     console.warn("Failed to fetch PR data:", error);
   }
 
+  // Generate enhanced AI summary with more detailed data
+  let aiSummary: string | null = null;
+  try {
+    const aiService = new AIService();
+    const summaryData = prepareWeeklySummaryData(
+      commits,
+      categories,
+      leaderboard,
+      branchGroups,
+      start,
+      end
+    );
+    aiSummary = await aiService.generateWeeklySummary(summaryData);
+  } catch (error) {
+    console.warn("Failed to generate AI summary:", error);
+  }
+
   const reportData = {
     commits,
     totalCommits: commits.length,
@@ -68,6 +104,7 @@ export async function generateWeeklyReport(repoPath?: string) {
     leaderboard,
     prSummary,
     branchGroups,
+    aiSummary: aiSummary || undefined,
   };
 
   const options: ReportOptions = {

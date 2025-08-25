@@ -82,4 +82,5 @@ export interface ReportData {
   leaderboard?: LeaderboardEntry[];
   prSummary?: PRSummary;
   branchGroups?: BranchGroup[];
+  aiSummary?: string;
 }

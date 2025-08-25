@@ -10,7 +10,62 @@ A Git commit reporter tool that generates daily and weekly activity reports base
 - **Commit Categories Breakdown**: Automatically categorizes commits and displays visual charts showing the distribution of commit types.
 - **Top Contributors Leaderboard**: Shows a ranked table of contributors with their commit counts and 🥇🥈🥉 badges for top performers.
 - **Interactive Charts**: Uses Chart.js to create beautiful pie/doughnut charts for category visualization.
+- **AI-Powered Weekly Summaries**: Uses OpenAI to generate natural language summaries of weekly activity.
+- **GitHub Integration**: Fetches PR and review data from GitHub for comprehensive reporting.
+- **Branch Grouping**: Organizes commits by branch for better visibility.
+- **Centralized Configuration**: Uses dotenv for environment variable management.
 - **Customizable**: Easily modify the report formats and data included in the reports.
+
+## Configuration
+
+The application uses environment variables for configuration. Create a `.env` file in the root directory:
+
+```bash
+# Copy the example file
+cp .env.example .env
+```
+
+Then edit the `.env` file with your credentials:
+
+```env
+# OpenAI API Key for AI-powered weekly summaries (optional)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# GitHub Personal Access Token for PR/Review data (optional)
+GITHUB_TOKEN=your_github_token_here
+
+# Application Environment
+NODE_ENV=development
+
+# Logging Level (debug, info, warn, error)
+LOG_LEVEL=info
+```
+
+### Configuration Options
+
+- **OPENAI_API_KEY**: Optional for high-quality AI summaries. Get your key from [OpenAI Platform](https://platform.openai.com/api-keys).
+- **HUGGINGFACE_TOKEN**: Optional for free AI summaries via Hugging Face. Get your token from [Hugging Face](https://huggingface.co/settings/tokens). Works without token on free tier with rate limits.
+- **GITHUB_TOKEN**: Required for GitHub PR/review integration. Create a [Personal Access Token](https://github.com/settings/tokens) with `repo` permissions.
+- **NODE_ENV**: Application environment (development, production, test)
+- **LOG_LEVEL**: Logging verbosity level
+
+### AI Summary Providers
+
+The application supports multiple AI providers with automatic fallback:
+
+1. **OpenAI (Primary)** - High quality summaries (requires paid API key)
+2. **Hugging Face (Fallback)** - Free AI summaries (works with free tier)
+3. **Basic Summary (Failsafe)** - Generated locally if no AI service is available
+
+The system will automatically try providers in order and fallback gracefully if any service fails.
+
+### Check Configuration Status
+
+You can verify your configuration setup with:
+
+```bash
+npm run config:check
+```
 
 ### Commit Categories
 

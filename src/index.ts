@@ -1,3 +1,4 @@
+import "./config";
 import { generateDailyReport } from "./reporters/daily";
 import { generateWeeklyReport } from "./reporters/weekly";
 import * as fs from "fs/promises";

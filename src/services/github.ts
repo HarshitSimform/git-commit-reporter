@@ -1,5 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { PullRequest, ReviewActivity } from "../types";
+import { config } from "../config";
 
 export class GitHubService {
   private octokit: Octokit;
@@ -10,7 +11,7 @@ export class GitHubService {
     this.owner = owner;
     this.repo = repo;
     this.octokit = new Octokit({
-      auth: token || process.env.GITHUB_TOKEN,
+      auth: token || config.github.token,
     });
   }
 
