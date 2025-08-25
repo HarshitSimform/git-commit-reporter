@@ -3,6 +3,8 @@ import { generateDailyReport } from './reporters/daily';
 import { generateWeeklyReport } from './reporters/weekly';
 import * as fs from 'fs/promises';
 
+// Test Husky + lint-staged setup
+
 async function main() {
   try {
     // Generate reports
