@@ -51,5 +51,10 @@
     "activity"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write"
+    ]
+  }
 }
