@@ -1,8 +1,8 @@
-import { config as dotenvConfig } from "dotenv";
-import path from "path";
+import { config as dotenvConfig } from 'dotenv';
+import path from 'path';
 
 // Load environment variables from .env file
-dotenvConfig({ path: path.resolve(process.cwd(), ".env") });
+dotenvConfig({ path: path.resolve(process.cwd(), '.env') });
 
 export interface Config {
   openai: {
@@ -35,8 +35,8 @@ export const config: Config = {
     token: process.env.GITHUB_TOKEN,
   },
   app: {
-    nodeEnv: process.env.NODE_ENV || "development",
-    logLevel: process.env.LOG_LEVEL || "info",
+    nodeEnv: process.env.NODE_ENV || 'development',
+    logLevel: process.env.LOG_LEVEL || 'info',
   },
 };
 
@@ -48,7 +48,7 @@ export function validateConfig(required: string[] = []): void {
   const missing: string[] = [];
 
   for (const path of required) {
-    const keys = path.split(".");
+    const keys = path.split('.');
     let current: any = config;
 
     for (const key of keys) {
@@ -61,7 +61,7 @@ export function validateConfig(required: string[] = []): void {
   }
 
   if (missing.length > 0) {
-    throw new Error(`Missing required configuration: ${missing.join(", ")}`);
+    throw new Error(`Missing required configuration: ${missing.join(', ')}`);
   }
 }
 
@@ -71,7 +71,7 @@ export function validateConfig(required: string[] = []): void {
  * @param defaultValue - Default value if not found
  */
 export function getConfig<T = any>(path: string, defaultValue?: T): T {
-  const keys = path.split(".");
+  const keys = path.split('.');
   let current: any = config;
 
   for (const key of keys) {
@@ -89,7 +89,7 @@ export function getConfig<T = any>(path: string, defaultValue?: T): T {
  * @param path - Dot notation path to the config value
  */
 export function hasConfig(path: string): boolean {
-  const keys = path.split(".");
+  const keys = path.split('.');
   let current: any = config;
 
   for (const key of keys) {

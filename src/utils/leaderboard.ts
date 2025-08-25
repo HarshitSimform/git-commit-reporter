@@ -1,12 +1,7 @@
-import { GitCommit, LeaderboardEntry } from "../types";
+import { GitCommit, LeaderboardEntry } from '../types';
 
-export function aggregateContributors(
-  commits: GitCommit[]
-): LeaderboardEntry[] {
-  const contributorMap = new Map<
-    string,
-    { name: string; email: string; count: number }
-  >();
+export function aggregateContributors(commits: GitCommit[]): LeaderboardEntry[] {
+  const contributorMap = new Map<string, { name: string; email: string; count: number }>();
 
   // Count commits per contributor
   commits.forEach((commit) => {
@@ -31,7 +26,7 @@ export function aggregateContributors(
       author_name: contributor.name,
       author_email: contributor.email,
       commits: contributor.count,
-      badge: "", // Will be set below
+      badge: '', // Will be set below
     }))
     .sort((a, b) => b.commits - a.commits); // Sort descending by commits
 
@@ -47,19 +42,19 @@ export function aggregateContributors(
 export function getBadgeForRank(rank: number): string {
   switch (rank) {
     case 1:
-      return "🥇";
+      return '🥇';
     case 2:
-      return "🥈";
+      return '🥈';
     case 3:
-      return "🥉";
+      return '🥉';
     default:
-      return "";
+      return '';
   }
 }
 
 export function getTopContributors(
   leaderboard: LeaderboardEntry[],
-  limit: number = 10
+  limit: number = 10,
 ): LeaderboardEntry[] {
   return leaderboard.slice(0, limit);
 }

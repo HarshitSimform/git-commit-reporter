@@ -1,6 +1,6 @@
-import { Octokit } from "@octokit/rest";
-import { PullRequest, ReviewActivity } from "../types";
-import { config } from "../config";
+import { Octokit } from '@octokit/rest';
+import { PullRequest, ReviewActivity } from '../types';
+import { config } from '../config';
 
 export class GitHubService {
   private octokit: Octokit;
@@ -20,9 +20,9 @@ export class GitHubService {
       const { data } = await this.octokit.rest.pulls.list({
         owner: this.owner,
         repo: this.repo,
-        state: "all",
-        sort: "created",
-        direction: "desc",
+        state: 'all',
+        sort: 'created',
+        direction: 'desc',
         per_page: 100,
       });
 
@@ -34,8 +34,8 @@ export class GitHubService {
         .map((pr) => ({
           number: pr.number,
           title: pr.title,
-          author: pr.user?.login || "Unknown",
-          state: pr.state as "open" | "closed",
+          author: pr.user?.login || 'Unknown',
+          state: pr.state as 'open' | 'closed',
           merged: pr.merged_at !== null,
           created_at: new Date(pr.created_at),
           merged_at: pr.merged_at ? new Date(pr.merged_at) : undefined,
@@ -43,7 +43,7 @@ export class GitHubService {
           url: pr.html_url,
         }));
     } catch (error) {
-      console.warn("Failed to fetch PRs:", error);
+      console.warn('Failed to fetch PRs:', error);
       return [];
     }
   }
@@ -62,7 +62,7 @@ export class GitHubService {
         const reviewActivities = reviews
           .filter((review) => review.user?.login !== pr.author) // Exclude self-reviews
           .map((review) => ({
-            reviewer: review.user?.login || "Unknown",
+            reviewer: review.user?.login || 'Unknown',
             pr_number: pr.number,
             pr_title: pr.title,
             submitted_at: new Date(review.submitted_at || new Date()),
@@ -77,17 +77,14 @@ export class GitHubService {
     return activities;
   }
 
-  async getMergedPullRequests(
-    since: Date,
-    until: Date
-  ): Promise<PullRequest[]> {
+  async getMergedPullRequests(since: Date, until: Date): Promise<PullRequest[]> {
     try {
       const { data } = await this.octokit.rest.pulls.list({
         owner: this.owner,
         repo: this.repo,
-        state: "closed",
-        sort: "updated",
-        direction: "desc",
+        state: 'closed',
+        sort: 'updated',
+        direction: 'desc',
         per_page: 100,
       });
 
@@ -100,8 +97,8 @@ export class GitHubService {
         .map((pr) => ({
           number: pr.number,
           title: pr.title,
-          author: pr.user?.login || "Unknown",
-          state: "closed" as const,
+          author: pr.user?.login || 'Unknown',
+          state: 'closed' as const,
           merged: true,
           created_at: new Date(pr.created_at),
           merged_at: new Date(pr.merged_at!),
@@ -109,7 +106,7 @@ export class GitHubService {
           url: pr.html_url,
         }));
     } catch (error) {
-      console.warn("Failed to fetch merged PRs:", error);
+      console.warn('Failed to fetch merged PRs:', error);
       return [];
     }
   }

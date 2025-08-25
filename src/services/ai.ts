@@ -1,7 +1,7 @@
-import OpenAI from "openai";
-import { HfInference } from "@huggingface/inference";
-import { CommitCategory, LeaderboardEntry, BranchGroup } from "../types";
-import { config, hasConfig } from "../config";
+import OpenAI from 'openai';
+import { HfInference } from '@huggingface/inference';
+import { CommitCategory, LeaderboardEntry, BranchGroup } from '../types';
+import { config, hasConfig } from '../config';
 
 export interface WeeklySummaryData {
   totalCommits: number;
@@ -20,40 +20,36 @@ export class AIService {
 
   constructor() {
     // Initialize OpenAI client if API key is available
-    if (hasConfig("openai.apiKey") && config.openai.apiKey) {
+    if (hasConfig('openai.apiKey') && config.openai.apiKey) {
       this.openai = new OpenAI({ apiKey: config.openai.apiKey });
     }
 
     // Initialize Hugging Face client only if token is available
     // Without a token, most useful models won't be accessible
-    if (hasConfig("huggingface.token") && config.huggingface.token) {
+    if (hasConfig('huggingface.token') && config.huggingface.token) {
       this.hf = new HfInference(config.huggingface.token);
     }
   }
 
   async generateWeeklySummary(data: WeeklySummaryData): Promise<string | null> {
     // Use only free AI providers - try Hugging Face first, then fallback to basic
-    if (this.hf && hasConfig("huggingface.token")) {
+    if (this.hf && hasConfig('huggingface.token')) {
       try {
         const aiResult = await this.tryHuggingFaceGeneration(data);
         if (aiResult) {
           return aiResult;
         }
       } catch (error) {
-        console.warn("Hugging Face generation failed:", error);
+        console.warn('Hugging Face generation failed:', error);
       }
     }
 
     // If no HF token or HF failed, generate enhanced basic summary
-    console.log(
-      "Using enhanced basic summary generation (no AI providers available)"
-    );
+    console.log('Using enhanced basic summary generation (no AI providers available)');
     return this.generateEnhancedBasicSummary(data);
   }
 
-  private async tryHuggingFaceGeneration(
-    data: WeeklySummaryData
-  ): Promise<string | null> {
+  private async tryHuggingFaceGeneration(data: WeeklySummaryData): Promise<string | null> {
     if (!this.hf) {
       return null;
     }
@@ -63,7 +59,7 @@ export class AIService {
     try {
       // Use Hugging Face's recommended text generation models
       const response = await this.hf.textGeneration({
-        model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        model: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
         inputs: prompt,
         parameters: {
           max_new_tokens: 300,
@@ -79,7 +75,7 @@ export class AIService {
       // Try alternative free model - Google's Flan-T5
       try {
         const response = await this.hf.textGeneration({
-          model: "google/flan-t5-large",
+          model: 'google/flan-t5-large',
           inputs: prompt,
           parameters: {
             max_new_tokens: 300,
@@ -91,25 +87,19 @@ export class AIService {
         const generated = response.generated_text?.trim();
         return generated ? this.formatSummaryForHTML(generated) : null;
       } catch (fallbackError) {
-        console.warn("Both HF models failed:", error, fallbackError);
+        console.warn('Both HF models failed:', error, fallbackError);
         return null;
       }
     }
   }
 
   private generateEnhancedBasicSummary(data: WeeklySummaryData): string {
-    const {
-      totalCommits,
-      categories,
-      topContributors,
-      branchGroups,
-      dateRange,
-    } = data;
+    const { totalCommits, categories, topContributors, branchGroups, dateRange } = data;
 
     // Analyze the data for insights
     const topCategory = categories.reduce(
       (prev, curr) => (prev.count > curr.count ? prev : curr),
-      categories[0]
+      categories[0],
     );
 
     const topContributor = topContributors[0];
@@ -128,53 +118,47 @@ export class AIService {
     if (workTypes.length > 0) {
       const workTypeDescriptions = workTypes.map((cat) => {
         switch (cat.name.toLowerCase()) {
-          case "feature":
+          case 'feature':
             return `${cat.count} new features`;
-          case "fix":
+          case 'fix':
             return `${cat.count} bug fixes`;
-          case "docs":
+          case 'docs':
             return `${cat.count} documentation updates`;
-          case "refactor":
+          case 'refactor':
             return `${cat.count} code refactors`;
-          case "style":
+          case 'style':
             return `${cat.count} style improvements`;
-          case "test":
+          case 'test':
             return `${cat.count} test additions`;
           default:
             return `${cat.count} ${cat.name.toLowerCase()} changes`;
         }
       });
-      workDescription += ` focusing on ${workTypeDescriptions.join(", ")}`;
+      workDescription += ` focusing on ${workTypeDescriptions.join(', ')}`;
     }
 
     // Add branch activity
     if (branchGroups.length > 0) {
       const topBranches = branchGroups.slice(0, 2);
-      const branchNames = topBranches
-        .map((bg) => `\`${bg.branch}\``)
-        .join(" and ");
+      const branchNames = topBranches.map((bg) => `\`${bg.branch}\``).join(' and ');
       workDescription += `. Most activity occurred on ${branchNames}`;
       if (branchGroups.length > 2) {
-        workDescription += ` along with ${
-          branchGroups.length - 2
-        } other branches`;
+        workDescription += ` along with ${branchGroups.length - 2} other branches`;
       }
     }
-    workDescription += ".";
+    workDescription += '.';
 
     paragraphs.push(workDescription);
 
     // Second paragraph: Contributors and momentum
-    let contributorInsight = "";
+    let contributorInsight = '';
     if (topContributors.length > 0) {
       if (topContributors.length === 1) {
         contributorInsight = `${topContributor.author_name} led development with ${topContributor.commits} commits`;
       } else if (topContributors.length >= 2) {
         contributorInsight = `${topContributor.author_name} led with ${topContributor.commits} commits, followed by ${topContributors[1].author_name} (${topContributors[1].commits} commits)`;
         if (topContributors.length > 2) {
-          contributorInsight += ` and ${
-            topContributors.length - 2
-          } other contributors`;
+          contributorInsight += ` and ${topContributors.length - 2} other contributors`;
         }
       }
 
@@ -185,12 +169,12 @@ export class AIService {
       if (topCategory && topCategory.count > totalCommits * 0.4) {
         contributorInsight += `, showing strong focus on ${topCategory.name.toLowerCase()} work`;
       }
-      contributorInsight += ".";
+      contributorInsight += '.';
 
       paragraphs.push(contributorInsight);
     }
 
-    return `<p>${paragraphs.join("</p><p>")}</p>`;
+    return `<p>${paragraphs.join('</p><p>')}</p>`;
   }
 
   private formatSummaryForHTML(text: string): string {
@@ -202,49 +186,38 @@ export class AIService {
     for (let i = 0; i < sentences.length; i += 2) {
       const paragraphSentences = sentences.slice(i, i + 2);
       if (paragraphSentences.length > 0) {
-        const paragraph = paragraphSentences.join(". ").trim();
+        const paragraph = paragraphSentences.join('. ').trim();
         if (paragraph.length > 0) {
-          paragraphs.push(paragraph + (paragraph.endsWith(".") ? "" : "."));
+          paragraphs.push(paragraph + (paragraph.endsWith('.') ? '' : '.'));
         }
       }
     }
 
     // Return as HTML paragraphs
-    return paragraphs.length > 0
-      ? `<p>${paragraphs.join("</p><p>")}</p>`
-      : `<p>${text}</p>`;
+    return paragraphs.length > 0 ? `<p>${paragraphs.join('</p><p>')}</p>` : `<p>${text}</p>`;
   }
 
   private buildEnhancedSummaryPrompt(data: WeeklySummaryData): string {
-    const {
-      totalCommits,
-      categories,
-      topContributors,
-      branchGroups,
-      dateRange,
-    } = data;
+    const { totalCommits, categories, topContributors, branchGroups, dateRange } = data;
 
     // Build detailed categories breakdown
     const categoriesText = categories
       .filter((cat) => cat.count > 0)
       .sort((a, b) => b.count - a.count)
       .map((cat) => `${cat.name}: ${cat.count} commits`)
-      .join(", ");
+      .join(', ');
 
     // Build comprehensive contributors list
     const contributorsText = topContributors
       .slice(0, 5)
-      .map(
-        (contributor) =>
-          `${contributor.author_name} (${contributor.commits} commits)`
-      )
-      .join(", ");
+      .map((contributor) => `${contributor.author_name} (${contributor.commits} commits)`)
+      .join(', ');
 
     // Build detailed branches analysis
     const branchesText = branchGroups
       .slice(0, 4)
       .map((branch) => `${branch.branch} (${branch.count} commits)`)
-      .join(", ");
+      .join(', ');
 
     const startDate = dateRange.start.toLocaleDateString();
     const endDate = dateRange.end.toLocaleDateString();
@@ -253,9 +226,9 @@ export class AIService {
 
 Project Activity (${startDate} to ${endDate}):
 - Total commits: ${totalCommits}
-- Work breakdown: ${categoriesText || "Mixed development work"}
-- Key contributors: ${contributorsText || "Various team members"}
-- Active branches: ${branchesText || "Multiple development branches"}
+- Work breakdown: ${categoriesText || 'Mixed development work'}
+- Key contributors: ${contributorsText || 'Various team members'}
+- Active branches: ${branchesText || 'Multiple development branches'}
 
 Focus on:
 - What major work happened (features added, bugs fixed, docs updated, refactors)
@@ -268,34 +241,25 @@ Format the response as 2-3 engaging paragraphs suitable for embedding in an HTML
   }
 
   private buildSummaryPrompt(data: WeeklySummaryData): string {
-    const {
-      totalCommits,
-      categories,
-      topContributors,
-      branchGroups,
-      dateRange,
-    } = data;
+    const { totalCommits, categories, topContributors, branchGroups, dateRange } = data;
 
     // Build categories breakdown
     const categoriesText = categories
       .filter((cat) => cat.count > 0)
       .map((cat) => `${cat.name} = ${cat.count}`)
-      .join(", ");
+      .join(', ');
 
     // Build top contributors list (top 3)
     const contributorsText = topContributors
       .slice(0, 3)
-      .map(
-        (contributor) =>
-          `${contributor.author_name} (${contributor.commits} commits)`
-      )
-      .join(", ");
+      .map((contributor) => `${contributor.author_name} (${contributor.commits} commits)`)
+      .join(', ');
 
     // Build active branches list (top 3)
     const branchesText = branchGroups
       .slice(0, 3)
       .map((branch) => `${branch.branch} (${branch.count} commits)`)
-      .join(", ");
+      .join(', ');
 
     const startDate = dateRange.start.toLocaleDateString();
     const endDate = dateRange.end.toLocaleDateString();
@@ -304,9 +268,9 @@ Format the response as 2-3 engaging paragraphs suitable for embedding in an HTML
 
 Week: ${startDate} to ${endDate}
 Total commits: ${totalCommits}
-Categories: ${categoriesText || "No categorized commits"}
-Top contributors: ${contributorsText || "No contributors"}
-Active branches: ${branchesText || "No branch data"}
+Categories: ${categoriesText || 'No categorized commits'}
+Top contributors: ${contributorsText || 'No contributors'}
+Active branches: ${branchesText || 'No branch data'}
 
 Focus on the most significant development activities and improvements made this week.`;
   }

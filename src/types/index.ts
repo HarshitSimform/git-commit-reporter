@@ -18,7 +18,7 @@ export interface BranchGroup {
 export interface ReportOptions {
   startDate: Date;
   endDate: Date;
-  format: "html" | "text";
+  format: 'html' | 'text';
 }
 
 export interface CommitCategory {
@@ -39,7 +39,7 @@ export interface PullRequest {
   number: number;
   title: string;
   author: string;
-  state: "open" | "closed";
+  state: 'open' | 'closed';
   merged: boolean;
   created_at: Date;
   merged_at?: Date;

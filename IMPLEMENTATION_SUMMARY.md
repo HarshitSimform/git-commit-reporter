@@ -21,7 +21,6 @@ The Git Commit Reporter is a TypeScript-based tool that analyzes Git repositorie
 I successfully implemented the **Commit Categories Breakdown** feature as requested:
 
 1. **Smart Categorization**: Automatically categorizes commits based on conventional commit prefixes:
-
    - `feat:` → Feature
    - `fix:` → Fix
    - `docs:` → Docs
@@ -35,7 +34,6 @@ I successfully implemented the **Commit Categories Breakdown** feature as reques
 2. **Chart.js Integration**: Added Chart.js for beautiful doughnut charts to visualize category distribution
 
 3. **Enhanced Reports**: Both daily and weekly reports now include:
-
    - Interactive category breakdown charts
    - Statistics table with percentages
    - Color-coded commit categories
