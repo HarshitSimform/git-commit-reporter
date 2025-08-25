@@ -1,20 +1,17 @@
-import { GitService } from "../services/git";
-import { GitHubService } from "../services/github";
-import { ReportService } from "../services/report";
-import { AIService } from "../services/ai";
-import { getDateRange } from "../utils/date";
+import { GitService } from '../services/git';
+import { GitHubService } from '../services/github';
+import { ReportService } from '../services/report';
+import { AIService } from '../services/ai';
+import { getDateRange } from '../utils/date';
 import {
   aggregateCommitsByCategory,
   categorizeCommit,
   groupCommitsByBranch,
-} from "../utils/categories";
-import {
-  aggregateContributors,
-  getTopContributors,
-} from "../utils/leaderboard";
-import { aggregatePRData, getTopReviewers } from "../utils/pr-analysis";
-import { ReportOptions } from "../types";
-import { WeeklySummaryData } from "../services/ai";
+} from '../utils/categories';
+import { aggregateContributors, getTopContributors } from '../utils/leaderboard';
+import { aggregatePRData, getTopReviewers } from '../utils/pr-analysis';
+import { ReportOptions } from '../types';
+import { WeeklySummaryData } from '../services/ai';
 
 function prepareWeeklySummaryData(
   commits: any[],
@@ -22,7 +19,7 @@ function prepareWeeklySummaryData(
   leaderboard: any[],
   branchGroups: any[],
   start: Date,
-  end: Date
+  end: Date,
 ): WeeklySummaryData {
   return {
     totalCommits: commits.length,
@@ -70,13 +67,10 @@ export async function generateWeeklyReport(repoPath?: string) {
       ]);
 
       prSummary = aggregatePRData(prsCreated, prsMerged, reviewActivities);
-      prSummary.reviewer_leaderboard = getTopReviewers(
-        prSummary.reviewer_leaderboard,
-        10
-      );
+      prSummary.reviewer_leaderboard = getTopReviewers(prSummary.reviewer_leaderboard, 10);
     }
   } catch (error) {
-    console.warn("Failed to fetch PR data:", error);
+    console.warn('Failed to fetch PR data:', error);
   }
 
   // Generate enhanced AI summary with more detailed data
@@ -89,11 +83,11 @@ export async function generateWeeklyReport(repoPath?: string) {
       leaderboard,
       branchGroups,
       start,
-      end
+      end,
     );
     aiSummary = await aiService.generateWeeklySummary(summaryData);
   } catch (error) {
-    console.warn("Failed to generate AI summary:", error);
+    console.warn('Failed to generate AI summary:', error);
   }
 
   const reportData = {
@@ -110,7 +104,7 @@ export async function generateWeeklyReport(repoPath?: string) {
   const options: ReportOptions = {
     startDate: start,
     endDate: end,
-    format: "html",
+    format: 'html',
   };
 
   return reportService.generateReport(reportData, options);

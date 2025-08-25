@@ -1,4 +1,4 @@
-import { startOfDay, endOfDay, subDays } from "date-fns";
+import { startOfDay, endOfDay, subDays } from 'date-fns';
 
 export function getDateRange(days: number) {
   const end = endOfDay(new Date());

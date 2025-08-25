@@ -1,83 +1,75 @@
-import { GitCommit, CommitCategory, BranchGroup } from "../types";
+import { GitCommit, CommitCategory, BranchGroup } from '../types';
 
 export function categorizeCommit(message: string): string {
   const normalizedMessage = message.toLowerCase().trim();
 
   if (
-    normalizedMessage.startsWith("feat:") ||
-    normalizedMessage.startsWith("feature:") ||
-    normalizedMessage.startsWith("feat ") ||
-    normalizedMessage.startsWith("feature ")
+    normalizedMessage.startsWith('feat:') ||
+    normalizedMessage.startsWith('feature:') ||
+    normalizedMessage.startsWith('feat ') ||
+    normalizedMessage.startsWith('feature ')
   ) {
-    return "Feature";
+    return 'Feature';
   }
   if (
-    normalizedMessage.startsWith("fix:") ||
-    normalizedMessage.startsWith("bugfix:") ||
-    normalizedMessage.startsWith("fix ") ||
-    normalizedMessage.startsWith("bugfix ")
+    normalizedMessage.startsWith('fix:') ||
+    normalizedMessage.startsWith('bugfix:') ||
+    normalizedMessage.startsWith('fix ') ||
+    normalizedMessage.startsWith('bugfix ')
   ) {
-    return "Fix";
+    return 'Fix';
   }
   if (
-    normalizedMessage.startsWith("docs:") ||
-    normalizedMessage.startsWith("doc:") ||
-    normalizedMessage.startsWith("docs ") ||
-    normalizedMessage.startsWith("doc ")
+    normalizedMessage.startsWith('docs:') ||
+    normalizedMessage.startsWith('doc:') ||
+    normalizedMessage.startsWith('docs ') ||
+    normalizedMessage.startsWith('doc ')
   ) {
-    return "Docs";
+    return 'Docs';
   }
   if (
-    normalizedMessage.startsWith("refactor:") ||
-    normalizedMessage.startsWith("refact:") ||
-    normalizedMessage.startsWith("refactor ") ||
-    normalizedMessage.startsWith("refact ")
+    normalizedMessage.startsWith('refactor:') ||
+    normalizedMessage.startsWith('refact:') ||
+    normalizedMessage.startsWith('refactor ') ||
+    normalizedMessage.startsWith('refact ')
   ) {
-    return "Refactor";
+    return 'Refactor';
+  }
+  if (normalizedMessage.startsWith('style:') || normalizedMessage.startsWith('style ')) {
+    return 'Style';
   }
   if (
-    normalizedMessage.startsWith("style:") ||
-    normalizedMessage.startsWith("style ")
+    normalizedMessage.startsWith('test:') ||
+    normalizedMessage.startsWith('tests:') ||
+    normalizedMessage.startsWith('test ') ||
+    normalizedMessage.startsWith('tests ')
   ) {
-    return "Style";
+    return 'Test';
+  }
+  if (normalizedMessage.startsWith('chore:') || normalizedMessage.startsWith('chore ')) {
+    return 'Chore';
   }
   if (
-    normalizedMessage.startsWith("test:") ||
-    normalizedMessage.startsWith("tests:") ||
-    normalizedMessage.startsWith("test ") ||
-    normalizedMessage.startsWith("tests ")
+    normalizedMessage.startsWith('perf:') ||
+    normalizedMessage.startsWith('performance:') ||
+    normalizedMessage.startsWith('perf ') ||
+    normalizedMessage.startsWith('performance ')
   ) {
-    return "Test";
+    return 'Performance';
   }
   if (
-    normalizedMessage.startsWith("chore:") ||
-    normalizedMessage.startsWith("chore ")
+    normalizedMessage.startsWith('update:') ||
+    normalizedMessage.startsWith('upd:') ||
+    normalizedMessage.startsWith('update ') ||
+    normalizedMessage.startsWith('upd ')
   ) {
-    return "Chore";
-  }
-  if (
-    normalizedMessage.startsWith("perf:") ||
-    normalizedMessage.startsWith("performance:") ||
-    normalizedMessage.startsWith("perf ") ||
-    normalizedMessage.startsWith("performance ")
-  ) {
-    return "Performance";
-  }
-  if (
-    normalizedMessage.startsWith("update:") ||
-    normalizedMessage.startsWith("upd:") ||
-    normalizedMessage.startsWith("update ") ||
-    normalizedMessage.startsWith("upd ")
-  ) {
-    return "Update";
+    return 'Update';
   }
 
-  return "Other";
+  return 'Other';
 }
 
-export function aggregateCommitsByCategory(
-  commits: GitCommit[]
-): CommitCategory[] {
+export function aggregateCommitsByCategory(commits: GitCommit[]): CommitCategory[] {
   const categoryMap = new Map<string, number>();
 
   // Categorize all commits
@@ -89,16 +81,16 @@ export function aggregateCommitsByCategory(
 
   // Define colors for each category
   const categoryColors: { [key: string]: string } = {
-    Feature: "#4CAF50",
-    Fix: "#F44336",
-    Docs: "#2196F3",
-    Refactor: "#FF9800",
-    Style: "#9C27B0",
-    Test: "#00BCD4",
-    Chore: "#795548",
-    Performance: "#CDDC39",
-    Update: "#E91E63",
-    Other: "#9E9E9E",
+    Feature: '#4CAF50',
+    Fix: '#F44336',
+    Docs: '#2196F3',
+    Refactor: '#FF9800',
+    Style: '#9C27B0',
+    Test: '#00BCD4',
+    Chore: '#795548',
+    Performance: '#CDDC39',
+    Update: '#E91E63',
+    Other: '#9E9E9E',
   };
 
   // Convert map to array of CommitCategory objects
@@ -106,7 +98,7 @@ export function aggregateCommitsByCategory(
     .map(([name, count]) => ({
       name,
       count,
-      color: categoryColors[name] || "#9E9E9E",
+      color: categoryColors[name] || '#9E9E9E',
     }))
     .sort((a, b) => b.count - a.count); // Sort by count descending
 }
@@ -130,7 +122,7 @@ export function groupCommitsByBranch(commits: GitCommit[]): BranchGroup[] {
 
   // Group commits by branch
   commits.forEach((commit) => {
-    const branch = commit.branch || "unknown";
+    const branch = commit.branch || 'unknown';
     if (!branchMap[branch]) {
       branchMap[branch] = [];
     }
@@ -141,15 +133,13 @@ export function groupCommitsByBranch(commits: GitCommit[]): BranchGroup[] {
   return Object.entries(branchMap)
     .map(([branch, branchCommits]) => ({
       branch,
-      commits: branchCommits.sort(
-        (a, b) => b.date.getTime() - a.date.getTime()
-      ),
+      commits: branchCommits.sort((a, b) => b.date.getTime() - a.date.getTime()),
       count: branchCommits.length,
     }))
     .sort((a, b) => {
       // Sort: main/master first, then by commit count
-      if (a.branch === "main" || a.branch === "master") return -1;
-      if (b.branch === "main" || b.branch === "master") return 1;
+      if (a.branch === 'main' || a.branch === 'master') return -1;
+      if (b.branch === 'main' || b.branch === 'master') return 1;
       return b.count - a.count;
     });
 }

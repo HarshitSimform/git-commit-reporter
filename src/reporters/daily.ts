@@ -1,16 +1,13 @@
-import { GitService } from "../services/git";
-import { ReportService } from "../services/report";
-import { getDateRange } from "../utils/date";
+import { GitService } from '../services/git';
+import { ReportService } from '../services/report';
+import { getDateRange } from '../utils/date';
 import {
   aggregateCommitsByCategory,
   categorizeCommit,
   groupCommitsByBranch,
-} from "../utils/categories";
-import {
-  aggregateContributors,
-  getTopContributors,
-} from "../utils/leaderboard";
-import { ReportOptions } from "../types";
+} from '../utils/categories';
+import { aggregateContributors, getTopContributors } from '../utils/leaderboard';
+import { ReportOptions } from '../types';
 
 export async function generateDailyReport(repoPath?: string) {
   const gitService = new GitService(repoPath);
@@ -46,7 +43,7 @@ export async function generateDailyReport(repoPath?: string) {
   const options: ReportOptions = {
     startDate: start,
     endDate: end,
-    format: "html",
+    format: 'html',
   };
 
   return reportService.generateReport(reportData, options);

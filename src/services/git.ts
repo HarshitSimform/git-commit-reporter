@@ -1,11 +1,11 @@
-import { SimpleGit, simpleGit } from "simple-git";
-import { GitCommit } from "../types";
+import { SimpleGit, simpleGit } from 'simple-git';
+import { GitCommit } from '../types';
 
 export class GitService {
   private git: SimpleGit;
   private repoPath: string;
 
-  constructor(repoPath: string = "/home/harshit/Harshit/projects/ssu-api-two") {
+  constructor(repoPath: string = '/home/harshit/Harshit/projects/ssu-api-two') {
     this.repoPath = repoPath;
     this.git = simpleGit(repoPath);
   }
@@ -14,7 +14,7 @@ export class GitService {
     const logs = await this.git.log([
       `--since=${since.toISOString()}`,
       `--until=${until.toISOString()}`,
-      "--all", // Get commits from all branches
+      '--all', // Get commits from all branches
     ]);
 
     const commits: GitCommit[] = [];
@@ -38,42 +38,33 @@ export class GitService {
 
   private async getBranchForCommit(commitHash: string): Promise<string> {
     try {
-      const branches = await this.git.raw([
-        "branch",
-        "--contains",
-        commitHash,
-        "--all",
-      ]);
+      const branches = await this.git.raw(['branch', '--contains', commitHash, '--all']);
 
       const branchLines = branches
-        .split("\n")
-        .map((line) => line.trim().replace(/^\*\s*/, ""))
-        .filter((line) => line && !line.includes("HEAD"))
+        .split('\n')
+        .map((line) => line.trim().replace(/^\*\s*/, ''))
+        .filter((line) => line && !line.includes('HEAD'))
         .map((line) => {
-          if (line.startsWith("remotes/origin/")) {
-            return line.replace("remotes/origin/", "");
+          if (line.startsWith('remotes/origin/')) {
+            return line.replace('remotes/origin/', '');
           }
           return line;
         })
-        .filter((branch) => branch !== "HEAD" && !branch.includes("->"));
+        .filter((branch) => branch !== 'HEAD' && !branch.includes('->'));
 
-      const mainBranches = branchLines.filter(
-        (b) => b === "main" || b === "master"
-      );
+      const mainBranches = branchLines.filter((b) => b === 'main' || b === 'master');
 
-      return mainBranches.length > 0
-        ? mainBranches[0]
-        : branchLines[0] || "unknown";
+      return mainBranches.length > 0 ? mainBranches[0] : branchLines[0] || 'unknown';
     } catch (error) {
       console.warn(`Failed to get branch for commit ${commitHash}:`, error);
-      return "unknown";
+      return 'unknown';
     }
   }
 
   async getGitHubRepoInfo(): Promise<{ owner: string; repo: string } | null> {
     try {
       const remotes = await this.git.getRemotes(true);
-      const origin = remotes.find((remote) => remote.name === "origin");
+      const origin = remotes.find((remote) => remote.name === 'origin');
 
       if (!origin?.refs?.fetch) {
         return null;
@@ -84,20 +75,20 @@ export class GitService {
       let match;
 
       // Try SSH format: git@github.com:owner/repo.git
-      match = url.match(/git@github\.com:([^\/]+)\/(.+?)(?:\.git)?$/);
+      match = url.match(/git@github\.com:([^/]+)\/(.+?)(?:\.git)?$/);
       if (match) {
         return { owner: match[1], repo: match[2] };
       }
 
       // Try HTTPS format: https://github.com/owner/repo.git
-      match = url.match(/https:\/\/github\.com\/([^\/]+)\/(.+?)(?:\.git)?$/);
+      match = url.match(/https:\/\/github\.com\/([^/]+)\/(.+?)(?:\.git)?$/);
       if (match) {
         return { owner: match[1], repo: match[2] };
       }
 
       return null;
     } catch (error) {
-      console.warn("Failed to get GitHub repo info:", error);
+      console.warn('Failed to get GitHub repo info:', error);
       return null;
     }
   }
