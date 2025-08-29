@@ -82,5 +82,61 @@ export interface ReportData {
   leaderboard?: LeaderboardEntry[];
   prSummary?: PRSummary;
   branchGroups?: BranchGroup[];
+  branchTrends?: BranchTrendChartData;
   aiSummary?: string;
+  isWeekly?: boolean;
+}
+
+export interface BranchTrendData {
+  [branchName: string]: {
+    [date: string]: {
+      commits: number;
+      contributors: number;
+    };
+  };
+}
+
+export interface BranchTrendChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    borderColor: string;
+    backgroundColor: string;
+    tension: number;
+  }[];
+}
+
+export interface WeeklyComparisonMetric {
+  thisWeek: number;
+  lastWeek: number;
+  change: number;
+  percentageChange: number;
+  trend: 'up' | 'down' | 'same';
+}
+
+export interface CategoryComparison {
+  name: string;
+  thisWeek: number;
+  lastWeek: number;
+  change: number;
+  trend: 'up' | 'down' | 'same';
+}
+
+export interface WeeklyComparisonData {
+  commits: WeeklyComparisonMetric;
+  contributors: WeeklyComparisonMetric;
+  categories: CategoryComparison[];
+  insights: string;
+}
+
+export interface WeeklyComparisonChartData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    borderWidth: number;
+  }[];
 }

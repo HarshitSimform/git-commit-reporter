@@ -2,6 +2,8 @@ import { GitService } from '../services/git';
 import { GitHubService } from '../services/github';
 import { ReportService } from '../services/report';
 import { AIService } from '../services/ai';
+import { BranchTrendsService } from '../services/branch-trends';
+import { WeeklyComparisonService } from '../services/weekly-comparison';
 import { getDateRange } from '../utils/date';
 import {
   aggregateCommitsByCategory,
@@ -33,6 +35,7 @@ function prepareWeeklySummaryData(
 export async function generateWeeklyReport(repoPath?: string) {
   const gitService = new GitService(repoPath);
   const reportService = new ReportService();
+  const branchTrendsService = new BranchTrendsService();
 
   const { start, end } = getDateRange(7);
   const commits = await gitService.getCommits(start, end);
@@ -51,6 +54,18 @@ export async function generateWeeklyReport(repoPath?: string) {
 
   // Group commits by branch
   const branchGroups = groupCommitsByBranch(commits);
+
+  // Get branch trends data for weekly report
+  const branchTrendData = branchTrendsService.getBranchCommitTrends(commits, start, end, true);
+  const branchTrends = branchTrendsService.prepareBranchTrendChartData(
+    branchTrendData,
+    start,
+    end,
+    true,
+  );
+
+  // Generate weekly comparison data
+  const weeklyComparison = WeeklyComparisonService.getWeeklyComparisonData(commits);
 
   // Generate PR data (if GitHub repo is detected and token is available)
   let prSummary;
@@ -98,7 +113,10 @@ export async function generateWeeklyReport(repoPath?: string) {
     leaderboard,
     prSummary,
     branchGroups,
+    branchTrends,
+    weeklyComparison,
     aiSummary: aiSummary || undefined,
+    isWeekly: true,
   };
 
   const options: ReportOptions = {

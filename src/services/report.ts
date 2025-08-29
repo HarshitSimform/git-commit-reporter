@@ -49,6 +49,41 @@ export class ReportService {
     Handlebars.registerHelper('getPRStateColor', (pr: PullRequest) => {
       return getPRStateColor(pr);
     });
+
+    // Helper to convert objects to JSON for JavaScript
+    Handlebars.registerHelper('json', (context: any) => {
+      return JSON.stringify(context);
+    });
+
+    Handlebars.registerHelper('formatDateTime', (date: Date) => {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    });
+
+    Handlebars.registerHelper('getCurrentDate', () => {
+      return new Date();
+    });
+
+    // Helper for equality comparison
+    Handlebars.registerHelper('eq', (a: any, b: any) => {
+      return a === b;
+    });
+
+    // Helper for greater than comparison
+    Handlebars.registerHelper('gt', (a: any, b: any) => {
+      return a > b;
+    });
+
+    // Helper for less than comparison
+    Handlebars.registerHelper('lt', (a: any, b: any) => {
+      return a < b;
+    });
   }
 
   async generateReport(data: ReportData, options: ReportOptions): Promise<string> {

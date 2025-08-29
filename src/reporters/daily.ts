@@ -1,5 +1,6 @@
 import { GitService } from '../services/git';
 import { ReportService } from '../services/report';
+import { BranchTrendsService } from '../services/branch-trends';
 import { getDateRange } from '../utils/date';
 import {
   aggregateCommitsByCategory,
@@ -12,6 +13,7 @@ import { ReportOptions } from '../types';
 export async function generateDailyReport(repoPath?: string) {
   const gitService = new GitService(repoPath);
   const reportService = new ReportService();
+  const branchTrendsService = new BranchTrendsService();
 
   const { start, end } = getDateRange(1);
   const commits = await gitService.getCommits(start, end);
@@ -31,6 +33,15 @@ export async function generateDailyReport(repoPath?: string) {
   // Group commits by branch
   const branchGroups = groupCommitsByBranch(commits);
 
+  // Get branch trends data for daily report
+  const branchTrendData = branchTrendsService.getBranchCommitTrends(commits, start, end, false);
+  const branchTrends = branchTrendsService.prepareBranchTrendChartData(
+    branchTrendData,
+    start,
+    end,
+    false,
+  );
+
   const reportData = {
     commits,
     totalCommits: commits.length,
@@ -38,6 +49,8 @@ export async function generateDailyReport(repoPath?: string) {
     categories,
     leaderboard,
     branchGroups,
+    branchTrends,
+    isWeekly: false,
   };
 
   const options: ReportOptions = {
