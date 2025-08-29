@@ -774,8 +774,12 @@
                 {{#if (eq weeklyComparison.commits.trend 'up')}}↗{{/if}}
                 {{#if (eq weeklyComparison.commits.trend 'down')}}↘{{/if}}
                 {{#if (eq weeklyComparison.commits.trend 'same')}}→{{/if}}
-                {{#if (gt weeklyComparison.commits.change 0)}}+{{/if}}{{weeklyComparison.commits.change}}
-                ({{#if (gt weeklyComparison.commits.percentageChange 0)}}+{{/if}}{{weeklyComparison.commits.percentageChange}}%)
+                {{#if
+                  (gt weeklyComparison.commits.change 0)
+                }}+{{/if}}{{weeklyComparison.commits.change}}
+                ({{#if
+                  (gt weeklyComparison.commits.percentageChange 0)
+                }}+{{/if}}{{weeklyComparison.commits.percentageChange}}%)
               </div>
             </div>
 
@@ -790,7 +794,9 @@
                 {{#if (eq weeklyComparison.contributors.trend 'up')}}↗{{/if}}
                 {{#if (eq weeklyComparison.contributors.trend 'down')}}↘{{/if}}
                 {{#if (eq weeklyComparison.contributors.trend 'same')}}→{{/if}}
-                {{#if (gt weeklyComparison.contributors.change 0)}}+{{/if}}{{weeklyComparison.contributors.change}}
+                {{#if
+                  (gt weeklyComparison.contributors.change 0)
+                }}+{{/if}}{{weeklyComparison.contributors.change}}
               </div>
             </div>
           </div>
@@ -800,26 +806,26 @@
           </div>
 
           {{#if weeklyComparison.categories}}
-          <div class='category-comparison'>
-            <h3>📂 Category Breakdown</h3>
-            <div class='category-grid'>
-              {{#each weeklyComparison.categories}}
-                <div class='category-item'>
-                  <span class='category-name'>{{name}}</span>
-                  <div class='category-values'>
-                    <span class='current'>{{thisWeek}}</span>
-                    <span class='vs'>vs</span>
-                    <span class='previous'>{{lastWeek}}</span>
-                    <span class='trend-icon {{trend}}'>
-                      {{#if (eq trend 'up')}}↗{{/if}}
-                      {{#if (eq trend 'down')}}↘{{/if}}
-                      {{#if (eq trend 'same')}}→{{/if}}
-                    </span>
+            <div class='category-comparison'>
+              <h3>📂 Category Breakdown</h3>
+              <div class='category-grid'>
+                {{#each weeklyComparison.categories}}
+                  <div class='category-item'>
+                    <span class='category-name'>{{name}}</span>
+                    <div class='category-values'>
+                      <span class='current'>{{thisWeek}}</span>
+                      <span class='vs'>vs</span>
+                      <span class='previous'>{{lastWeek}}</span>
+                      <span class='trend-icon {{trend}}'>
+                        {{#if (eq trend 'up')}}↗{{/if}}
+                        {{#if (eq trend 'down')}}↘{{/if}}
+                        {{#if (eq trend 'same')}}→{{/if}}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              {{/each}}
+                {{/each}}
+              </div>
             </div>
-          </div>
           {{/if}}
 
           <div class='insights-section'>
@@ -972,70 +978,18 @@
 
     {{#if weeklyComparison}}
       <script>
-        const weeklyComparisonCtx = document.getElementById('weeklyComparisonChart');
-        if (weeklyComparisonCtx) {
-          const comparisonData = {
-            labels: ['Commits', 'Contributors'],
-            datasets: [
-              {
-                label: 'This Week',
-                data: [{{weeklyComparison.commits.thisWeek}}, {{weeklyComparison.contributors.thisWeek}}],
-                backgroundColor: '#4ade80',
-                borderColor: '#22c55e',
-                borderWidth: 2
-              },
-              {
-                label: 'Last Week', 
-                data: [{{weeklyComparison.commits.lastWeek}}, {{weeklyComparison.contributors.lastWeek}}],
-                backgroundColor: '#94a3b8',
-                borderColor: '#64748b',
-                borderWidth: 2
-              }
-            ]
-          };
-
-          new Chart(weeklyComparisonCtx, {
-            type: 'bar',
-            data: comparisonData,
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'This Week vs Last Week Comparison',
-                  font: { size: 16 }
-                },
-                legend: {
-                  display: true,
-                  position: 'top'
-                }
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: 'Count'
-                  },
-                  ticks: {
-                    stepSize: 1
-                  }
-                },
-                x: {
-                  title: {
-                    display: true,
-                    text: 'Metrics'
-                  }
-                }
-              },
-              interaction: {
-                intersect: false,
-                mode: 'index'
-              }
-            }
-          });
-        }
+        const weeklyComparisonCtx = document.getElementById('weeklyComparisonChart'); if
+        (weeklyComparisonCtx) { const comparisonData = { labels: ['Commits', 'Contributors'],
+        datasets: [ { label: 'This Week', data: [{{weeklyComparison.commits.thisWeek}},
+        {{weeklyComparison.contributors.thisWeek}}], backgroundColor: '#4ade80', borderColor:
+        '#22c55e', borderWidth: 2 }, { label: 'Last Week', data: [{{weeklyComparison.commits.lastWeek}},
+        {{weeklyComparison.contributors.lastWeek}}], backgroundColor: '#94a3b8', borderColor:
+        '#64748b', borderWidth: 2 } ] }; new Chart(weeklyComparisonCtx, { type: 'bar', data:
+        comparisonData, options: { responsive: true, maintainAspectRatio: false, plugins: { title: {
+        display: true, text: 'This Week vs Last Week Comparison', font: { size: 16 } }, legend: {
+        display: true, position: 'top' } }, scales: { y: { beginAtZero: true, title: { display:
+        true, text: 'Count' }, ticks: { stepSize: 1 } }, x: { title: { display: true, text:
+        'Metrics' } } }, interaction: { intersect: false, mode: 'index' } } }); }
       </script>
     {{/if}}
   </body>

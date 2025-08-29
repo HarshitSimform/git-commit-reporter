@@ -125,7 +125,7 @@ describe('BranchTrendsService', () => {
     });
   });
 
-  describe('prepareBranchTrendChartData', () => {
+  describe('formatDataForChart', () => {
     it('should prepare chart data correctly for daily trends', () => {
       const trendData: BranchTrendData = {
         main: {
@@ -141,12 +141,7 @@ describe('BranchTrendsService', () => {
       const startDate = new Date('2025-01-01');
       const endDate = new Date('2025-01-02');
 
-      const result = branchTrendsService.prepareBranchTrendChartData(
-        trendData,
-        startDate,
-        endDate,
-        false,
-      );
+      const result = branchTrendsService.formatDataForChart(trendData, startDate, endDate, false);
 
       expect(result.labels).toHaveLength(2);
       expect(result.datasets).toHaveLength(2);
@@ -168,12 +163,7 @@ describe('BranchTrendsService', () => {
       const startDate = new Date('2025-01-01');
       const endDate = new Date('2025-01-03');
 
-      const result = branchTrendsService.prepareBranchTrendChartData(
-        trendData,
-        startDate,
-        endDate,
-        false,
-      );
+      const result = branchTrendsService.formatDataForChart(trendData, startDate, endDate, false);
 
       expect(result.datasets[0].data).toEqual([5, 0, 2]);
     });
@@ -188,12 +178,7 @@ describe('BranchTrendsService', () => {
       const startDate = new Date('2025-01-01');
       const endDate = new Date('2025-01-01');
 
-      const result = branchTrendsService.prepareBranchTrendChartData(
-        trendData,
-        startDate,
-        endDate,
-        false,
-      );
+      const result = branchTrendsService.formatDataForChart(trendData, startDate, endDate, false);
 
       expect(result.datasets[0].borderColor).not.toBe(result.datasets[1].borderColor);
       expect(result.datasets[1].borderColor).not.toBe(result.datasets[2].borderColor);

@@ -51,6 +51,7 @@ export class ReportService {
     });
 
     // Helper to convert objects to JSON for JavaScript
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Handlebars.registerHelper('json', (context: any) => {
       return JSON.stringify(context);
     });
@@ -70,19 +71,22 @@ export class ReportService {
       return new Date();
     });
 
-    // Helper for equality comparison
+    // Helper for equality checks in templates
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Handlebars.registerHelper('eq', (a: any, b: any) => {
       return a === b;
     });
 
-    // Helper for greater than comparison
+    // Helper for greater than checks
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Handlebars.registerHelper('gt', (a: any, b: any) => {
-      return a > b;
+      return Number(a) > Number(b);
     });
 
-    // Helper for less than comparison
+    // Helper for less than checks
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Handlebars.registerHelper('lt', (a: any, b: any) => {
-      return a < b;
+      return Number(a) < Number(b);
     });
   }
 
@@ -109,6 +113,7 @@ export class ReportService {
 
       // Generate chart data for Chart.js
       const chartData = generateCategoryChartData(data.categories);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (enhancedData as any).chartData = JSON.stringify(chartData);
     }
 

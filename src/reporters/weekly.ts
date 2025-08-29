@@ -12,14 +12,14 @@ import {
 } from '../utils/categories';
 import { aggregateContributors, getTopContributors } from '../utils/leaderboard';
 import { aggregatePRData, getTopReviewers } from '../utils/pr-analysis';
-import { ReportOptions } from '../types';
+import { ReportOptions, GitCommit, CommitCategory, LeaderboardEntry, BranchGroup } from '../types';
 import { WeeklySummaryData } from '../services/ai';
 
 function prepareWeeklySummaryData(
-  commits: any[],
-  categories: any[],
-  leaderboard: any[],
-  branchGroups: any[],
+  commits: GitCommit[],
+  categories: CommitCategory[],
+  leaderboard: LeaderboardEntry[],
+  branchGroups: BranchGroup[],
   start: Date,
   end: Date,
 ): WeeklySummaryData {
@@ -57,12 +57,7 @@ export async function generateWeeklyReport(repoPath?: string) {
 
   // Get branch trends data for weekly report
   const branchTrendData = branchTrendsService.getBranchCommitTrends(commits, start, end, true);
-  const branchTrends = branchTrendsService.prepareBranchTrendChartData(
-    branchTrendData,
-    start,
-    end,
-    true,
-  );
+  const branchTrends = branchTrendsService.formatDataForChart(branchTrendData, start, end, true);
 
   // Generate weekly comparison data
   const weeklyComparison = WeeklyComparisonService.getWeeklyComparisonData(commits);

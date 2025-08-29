@@ -35,12 +35,7 @@ export async function generateDailyReport(repoPath?: string) {
 
   // Get branch trends data for daily report
   const branchTrendData = branchTrendsService.getBranchCommitTrends(commits, start, end, false);
-  const branchTrends = branchTrendsService.prepareBranchTrendChartData(
-    branchTrendData,
-    start,
-    end,
-    false,
-  );
+  const branchTrends = branchTrendsService.formatDataForChart(branchTrendData, start, end, false);
 
   const reportData = {
     commits,

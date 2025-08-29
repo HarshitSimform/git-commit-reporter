@@ -8,7 +8,7 @@ export class BranchTrendsService {
     commits: GitCommit[],
     startDate: Date,
     endDate: Date,
-    isWeekly: boolean = false,
+    isWeekly = false,
   ): BranchTrendData {
     // Temporary structure for processing
     const tempData: {
@@ -61,11 +61,11 @@ export class BranchTrendsService {
   /**
    * Convert branch trend data to Chart.js format
    */
-  prepareBranchTrendChartData(
+  formatDataForChart(
     trendData: BranchTrendData,
     startDate: Date,
     endDate: Date,
-    isWeekly: boolean = false,
+    isWeekly = false,
   ): BranchTrendChartData {
     // Generate all dates in range
     const dateLabels = this.generateDateRange(startDate, endDate, isWeekly);

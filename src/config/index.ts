@@ -49,6 +49,7 @@ export function validateConfig(required: string[] = []): void {
 
   for (const path of required) {
     const keys = path.split('.');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let current: any = config;
 
     for (const key of keys) {
@@ -70,8 +71,9 @@ export function validateConfig(required: string[] = []): void {
  * @param path - Dot notation path to the config value
  * @param defaultValue - Default value if not found
  */
-export function getConfig<T = any>(path: string, defaultValue?: T): T {
+export function getConfig<T = unknown>(path: string, defaultValue?: T): T {
   const keys = path.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = config;
 
   for (const key of keys) {
@@ -90,6 +92,7 @@ export function getConfig<T = any>(path: string, defaultValue?: T): T {
  */
 export function hasConfig(path: string): boolean {
   const keys = path.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = config;
 
   for (const key of keys) {

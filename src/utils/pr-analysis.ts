@@ -44,10 +44,7 @@ export function aggregatePRData(
   };
 }
 
-export function getTopReviewers(
-  reviewerStats: ReviewerStats[],
-  limit: number = 10,
-): ReviewerStats[] {
+export function getTopReviewers(reviewerStats: ReviewerStats[], limit = 10): ReviewerStats[] {
   return reviewerStats.slice(0, limit);
 }
 
