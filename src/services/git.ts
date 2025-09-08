@@ -5,17 +5,11 @@ export class GitService {
   private git: SimpleGit;
   private repoPath: string;
 
-  // constructor(
-  //   repoPath: string = process.env.GIT_REPO_PATH || '/home/harshit/Harshit/projects/ssu-api-two',
-  // ) {
-  //   this.repoPath = repoPath;
-  //   this.git = simpleGit(repoPath);
-  // }
-
-  constructor(repoPath?: string) {
-    const validatedPath = this.validateRepoPath(repoPath);
-    this.repoPath = validatedPath;
-    this.git = simpleGit(validatedPath);
+  constructor(
+    repoPath: string = process.env.GIT_REPO_PATH || '/home/harshit/Harshit/projects/ssu-api-two',
+  ) {
+    this.repoPath = repoPath;
+    this.git = simpleGit(repoPath);
   }
 
   async getCommits(since: Date, until: Date): Promise<GitCommit[]> {
@@ -99,27 +93,5 @@ export class GitService {
       console.warn('Failed to get GitHub repo info:', error);
       return null;
     }
-  }
-
-  private validateRepoPath(path?: string): string {
-    const defaultPath = '/home/harshit/Harshit/projects/ssu-api-two';
-    const inputPath = path || defaultPath;
-
-    // Prevent directory traversal
-    if (inputPath.includes('..') || inputPath.includes('~')) {
-      throw new Error('Invalid repository path');
-    }
-
-    // Whitelist allowed directories
-    const allowedPaths = [process.env.ALLOWED_REPO_PATH ?? ''].filter(Boolean);
-
-    const isAllowed = allowedPaths.some(
-      (allowed) => allowed !== '' && inputPath.startsWith(allowed),
-    );
-    if (!isAllowed) {
-      throw new Error('Repository path not in allowed directories');
-    }
-
-    return inputPath;
   }
 }
