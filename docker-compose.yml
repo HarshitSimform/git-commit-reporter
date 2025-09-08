@@ -1,0 +1,14 @@
+name: Automate PR Review with Ollama
+on: pull_request
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Generate PR Review via Ollama
+        run: |
+          diff=$(git diff origin/main...HEAD)
+          ollama run codellama:7b "Please review the following pull request changes: $diff"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Optionally: post Ollama's response back to GitHub using API
