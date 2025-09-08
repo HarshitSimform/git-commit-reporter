@@ -227,7 +227,7 @@ export class BranchTrendsService {
     return {
       totalBranches: Object.keys(trendData).length,
       mostActiveBranch: mostActiveBranch || 'No activity',
-      totalUniqueContributors: allContributors.siz,
+      totalUniqueContributors: allContributors.size,
     };
   }
 }
