@@ -49,6 +49,45 @@ export class ReportService {
     Handlebars.registerHelper('getPRStateColor', (pr: PullRequest) => {
       return getPRStateColor(pr);
     });
+
+    // Helper to convert objects to JSON for JavaScript
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Handlebars.registerHelper('json', (context: any) => {
+      return JSON.stringify(context);
+    });
+
+    Handlebars.registerHelper('formatDateTime', (date: Date) => {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    });
+
+    Handlebars.registerHelper('getCurrentDate', () => {
+      return new Date();
+    });
+
+    // Helper for equality checks in templates
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Handlebars.registerHelper('eq', (a: any, b: any) => {
+      return a === b;
+    });
+
+    // Helper for greater than checks
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Handlebars.registerHelper('gt', (a: any, b: any) => {
+      return Number(a) > Number(b);
+    });
+
+    // Helper for less than checks
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Handlebars.registerHelper('lt', (a: any, b: any) => {
+      return Number(a) < Number(b);
+    });
   }
 
   async generateReport(data: ReportData, options: ReportOptions): Promise<string> {
@@ -74,6 +113,7 @@ export class ReportService {
 
       // Generate chart data for Chart.js
       const chartData = generateCategoryChartData(data.categories);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (enhancedData as any).chartData = JSON.stringify(chartData);
     }
 

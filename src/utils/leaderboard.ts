@@ -54,7 +54,7 @@ export function getBadgeForRank(rank: number): string {
 
 export function getTopContributors(
   leaderboard: LeaderboardEntry[],
-  limit: number = 10,
+  limit = 10,
 ): LeaderboardEntry[] {
   return leaderboard.slice(0, limit);
 }

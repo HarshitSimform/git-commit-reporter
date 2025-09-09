@@ -2,6 +2,17 @@ import { Octokit } from '@octokit/rest';
 import { PullRequest, ReviewActivity } from '../types';
 import { config } from '../config';
 
+interface GitHubPullRequest {
+  number: number;
+  title: string;
+  user: { login: string } | null;
+  state: string;
+  merged_at: string | null;
+  created_at: string;
+  html_url: string;
+  merged_by?: { login: string } | null;
+}
+
 export class GitHubService {
   private octokit: Octokit;
   private owner: string;
@@ -31,7 +42,7 @@ export class GitHubService {
           const createdAt = new Date(pr.created_at);
           return createdAt >= since && createdAt <= until;
         })
-        .map((pr) => ({
+        .map((pr: GitHubPullRequest) => ({
           number: pr.number,
           title: pr.title,
           author: pr.user?.login || 'Unknown',
@@ -39,7 +50,7 @@ export class GitHubService {
           merged: pr.merged_at !== null,
           created_at: new Date(pr.created_at),
           merged_at: pr.merged_at ? new Date(pr.merged_at) : undefined,
-          merged_by: (pr as any).merged_by?.login,
+          merged_by: pr.merged_by?.login,
           url: pr.html_url,
         }));
     } catch (error) {
@@ -94,7 +105,7 @@ export class GitHubService {
           const mergedAt = new Date(pr.merged_at);
           return mergedAt >= since && mergedAt <= until;
         })
-        .map((pr) => ({
+        .map((pr: GitHubPullRequest) => ({
           number: pr.number,
           title: pr.title,
           author: pr.user?.login || 'Unknown',
@@ -102,7 +113,7 @@ export class GitHubService {
           merged: true,
           created_at: new Date(pr.created_at),
           merged_at: new Date(pr.merged_at!),
-          merged_by: (pr as any).merged_by?.login,
+          merged_by: pr.merged_by?.login,
           url: pr.html_url,
         }));
     } catch (error) {

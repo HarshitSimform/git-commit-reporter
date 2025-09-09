@@ -5,7 +5,9 @@ export class GitService {
   private git: SimpleGit;
   private repoPath: string;
 
-  constructor(repoPath: string = '/home/harshit/Harshit/projects/ssu-api-two') {
+  constructor(
+    repoPath: string = process.env.GIT_REPO_PATH || '/home/harshit/Harshit/projects/ssu-api-two',
+  ) {
     this.repoPath = repoPath;
     this.git = simpleGit(repoPath);
   }

@@ -94,7 +94,7 @@ export class AIService {
   }
 
   private generateEnhancedBasicSummary(data: WeeklySummaryData): string {
-    const { totalCommits, categories, topContributors, branchGroups, dateRange } = data;
+    const { totalCommits, categories, topContributors, branchGroups } = data;
 
     // Analyze the data for insights
     const topCategory = categories.reduce(
@@ -103,7 +103,6 @@ export class AIService {
     );
 
     const topContributor = topContributors[0];
-    const activeBranches = branchGroups.length;
 
     // Create engaging paragraphs
     const paragraphs = [];

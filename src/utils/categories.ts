@@ -3,70 +3,59 @@ import { GitCommit, CommitCategory, BranchGroup } from '../types';
 export function categorizeCommit(message: string): string {
   const normalizedMessage = message.toLowerCase().trim();
 
-  if (
-    normalizedMessage.startsWith('feat:') ||
-    normalizedMessage.startsWith('feature:') ||
-    normalizedMessage.startsWith('feat ') ||
-    normalizedMessage.startsWith('feature ')
-  ) {
-    return 'Feature';
-  }
-  if (
-    normalizedMessage.startsWith('fix:') ||
-    normalizedMessage.startsWith('bugfix:') ||
-    normalizedMessage.startsWith('fix ') ||
-    normalizedMessage.startsWith('bugfix ')
-  ) {
-    return 'Fix';
-  }
-  if (
-    normalizedMessage.startsWith('docs:') ||
-    normalizedMessage.startsWith('doc:') ||
-    normalizedMessage.startsWith('docs ') ||
-    normalizedMessage.startsWith('doc ')
-  ) {
-    return 'Docs';
-  }
-  if (
-    normalizedMessage.startsWith('refactor:') ||
-    normalizedMessage.startsWith('refact:') ||
-    normalizedMessage.startsWith('refactor ') ||
-    normalizedMessage.startsWith('refact ')
-  ) {
-    return 'Refactor';
-  }
-  if (normalizedMessage.startsWith('style:') || normalizedMessage.startsWith('style ')) {
-    return 'Style';
-  }
-  if (
-    normalizedMessage.startsWith('test:') ||
-    normalizedMessage.startsWith('tests:') ||
-    normalizedMessage.startsWith('test ') ||
-    normalizedMessage.startsWith('tests ')
-  ) {
-    return 'Test';
-  }
-  if (normalizedMessage.startsWith('chore:') || normalizedMessage.startsWith('chore ')) {
-    return 'Chore';
-  }
-  if (
-    normalizedMessage.startsWith('perf:') ||
-    normalizedMessage.startsWith('performance:') ||
-    normalizedMessage.startsWith('perf ') ||
-    normalizedMessage.startsWith('performance ')
-  ) {
-    return 'Performance';
-  }
-  if (
-    normalizedMessage.startsWith('update:') ||
-    normalizedMessage.startsWith('upd:') ||
-    normalizedMessage.startsWith('update ') ||
-    normalizedMessage.startsWith('upd ')
-  ) {
-    return 'Update';
+  // Define patterns for each category with their keywords
+  const categoryPatterns = [
+    {
+      category: 'Feature',
+      patterns: ['feat:', 'feature:', 'feat ', 'feature '],
+    },
+    {
+      category: 'Fix',
+      patterns: ['fix:', 'bugfix:', 'fix ', 'bugfix '],
+    },
+    {
+      category: 'Docs',
+      patterns: ['docs:', 'doc:', 'docs ', 'doc '],
+    },
+    {
+      category: 'Refactor',
+      patterns: ['refactor:', 'refact:', 'refactor ', 'refact '],
+    },
+    {
+      category: 'Style',
+      patterns: ['style:', 'style '],
+    },
+    {
+      category: 'Test',
+      patterns: ['test:', 'tests:', 'test ', 'tests '],
+    },
+    {
+      category: 'Chore',
+      patterns: ['chore:', 'chore '],
+    },
+    {
+      category: 'Performance',
+      patterns: ['perf:', 'performance:', 'perf ', 'performance '],
+    },
+    {
+      category: 'Update',
+      patterns: ['update:', 'upd:', 'update ', 'upd '],
+    },
+  ];
+
+  // Find the earliest match in the message
+  let earliestMatch = { position: Infinity, category: 'Other' };
+
+  for (const { category, patterns } of categoryPatterns) {
+    for (const pattern of patterns) {
+      const position = normalizedMessage.indexOf(pattern);
+      if (position !== -1 && position < earliestMatch.position) {
+        earliestMatch = { position, category };
+      }
+    }
   }
 
-  return 'Other';
+  return earliestMatch.category;
 }
 
 export function aggregateCommitsByCategory(commits: GitCommit[]): CommitCategory[] {

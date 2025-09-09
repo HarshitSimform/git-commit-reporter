@@ -11,8 +11,8 @@
     "dev": "ts-node src/index.ts",
     "test:watch": "jest --watch",
     "config:check": "ts-node -e \"import {config, hasConfig} from './src/config'; console.log('Config status:'); console.log('OpenAI API Key:', hasConfig('openai.apiKey') ? 'Present' : 'Missing'); console.log('Hugging Face Token:', hasConfig('huggingface.token') ? 'Present' : 'Missing'); console.log('GitHub Token:', hasConfig('github.token') ? 'Present' : 'Missing');\"",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint . --ext .ts",
-    "lint:fix": "ESLINT_USE_FLAT_CONFIG=false eslint . --ext .ts --fix",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "lint:staged": "ESLINT_USE_FLAT_CONFIG=false eslint --fix --max-warnings=100",
     "format": "prettier --write .",
     "prepare": "husky"

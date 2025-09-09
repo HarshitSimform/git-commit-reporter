@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>Git Commit Report</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -260,53 +260,323 @@
         color: white;
       }
       .ai-summary-content {
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 6px;
-        border-left: 4px solid rgba(255, 255, 255, 0.3);
-      }
-      .ai-summary-content p {
-        margin: 0;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border-left: 4px solid #4caf50;
         line-height: 1.6;
         font-size: 1.05em;
+        color: #333;
+      }
+
+      .ai-summary-content p {
+        color: #333;
+        margin: 0.5rem 0;
+      }
+
+      .ai-summary-content strong {
+        color: #000;
+      }
+
+      /* Branch Trends Section */
+      .branch-trends-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        border-left: 4px solid #4caf50;
+      }
+
+      .branch-trends-section h2 {
+        color: #333;
+        margin-bottom: 1rem;
+      }
+
+      .section-description {
+        color: #666;
+        font-style: italic;
+        margin-bottom: 1.5rem;
+      }
+
+      .chart-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 1.5rem 0;
+        position: relative;
+        height: 400px;
+      }
+
+      .trends-summary {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+        font-style: italic;
+        color: #666;
+      }
+
+      .trends-summary strong {
+        color: #333;
+      }
+
+      /* Weekly Comparison Section */
+      .weekly-comparison-section {
+        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        padding: 2rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        border-left: 4px solid #e17055;
+      }
+
+      .weekly-comparison-section h2 {
+        color: #333;
+        margin-bottom: 1rem;
+      }
+
+      .comparison-metrics {
+        display: flex;
+        gap: 2rem;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+      }
+
+      .metric-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        min-width: 200px;
+        text-align: center;
+      }
+
+      .metric-card h3 {
+        margin: 0 0 1rem 0;
+        color: #333;
+        font-size: 1.1rem;
+      }
+
+      .metric-values {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .current-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #27ae60;
+      }
+
+      .vs-text {
+        color: #666;
+        font-style: italic;
+      }
+
+      .previous-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #95a5a6;
+      }
+
+      .metric-change {
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
+
+      .metric-change.up {
+        color: #27ae60;
+      }
+
+      .metric-change.down {
+        color: #e74c3c;
+      }
+
+      .metric-change.same {
+        color: #95a5a6;
+      }
+
+      .weekly-comparison-section .chart-container {
+        height: 300px;
+      }
+
+      .category-comparison {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+      }
+
+      .category-comparison h3 {
+        margin: 0 0 1rem 0;
+        color: #333;
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .category-item {
+        background: white;
+        padding: 1rem;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .category-name {
+        font-weight: bold;
+        color: #333;
+      }
+
+      .category-values {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .category-values .current {
+        color: #27ae60;
+        font-weight: bold;
+      }
+
+      .category-values .vs {
+        color: #666;
+        font-style: italic;
+      }
+
+      .category-values .previous {
+        color: #95a5a6;
+        font-weight: bold;
+      }
+
+      .trend-icon {
+        font-size: 1.2rem;
+        margin-left: 0.5rem;
+      }
+
+      .trend-icon.up {
+        color: #27ae60;
+      }
+
+      .trend-icon.down {
+        color: #e74c3c;
+      }
+
+      .trend-icon.same {
+        color: #95a5a6;
+      }
+
+      .insights-section {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-top: 1.5rem;
+        border-left: 4px solid #e17055;
+      }
+
+      .insights-section p {
+        margin: 0;
+        color: #333;
+        font-style: italic;
+      }
+
+      .insights-section strong {
+        color: #e17055;
+      }
+      .report-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .main-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 0 0 1rem 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .report-period {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+        opacity: 0.9;
+      }
+
+      .generation-time {
+        font-size: 1rem;
+        margin: 0.5rem 0 0 0;
+        opacity: 0.8;
+        font-style: italic;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <h1>Git Commit Report</h1>
-        <p style="color: #666;">Period:
+    <div class='container'>
+      <div class='header'>
+        <header class='report-header'>
+          <h1 class='main-title'>
+            {{#if isWeekly}}
+              📊 Weekly Git Commit Report
+            {{else}}
+              📈 Daily Git Commit Report
+            {{/if}}
+          </h1>
+          <p class='report-period'>
+            📅 Report Period:
+            {{formatDate dateRange.start}}
+            to
+            {{formatDate dateRange.end}}
+          </p>
+          <p class='generation-time'>
+            🕒 Generated:
+            {{formatDateTime (getCurrentDate)}}
+          </p>
+        </header>
+        <p style='color: #666;'>Period:
           {{dateRange.start}}
           to
           {{dateRange.end}}</p>
       </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number">{{totalCommits}}</div>
+      <div class='stats-grid'>
+        <div class='stat-card'>
+          <div class='stat-number'>{{totalCommits}}</div>
           <div>Total Commits</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">{{categories.length}}</div>
+        <div class='stat-card'>
+          <div class='stat-number'>{{categories.length}}</div>
           <div>Categories</div>
         </div>
         {{#if branchGroups}}
-          <div class="stat-card">
-            <div class="stat-number">{{branchGroups.length}}</div>
+          <div class='stat-card'>
+            <div class='stat-number'>{{branchGroups.length}}</div>
             <div>Active Branches</div>
           </div>
         {{/if}}
       </div>
 
       {{#if categories}}
-        <div class="chart-section">
+        <div class='chart-section'>
           <h2>Commit Categories Breakdown</h2>
-          <div class="chart-container">
-            <canvas id="categoryChart"></canvas>
+          <div class='chart-container'>
+            <canvas id='categoryChart'></canvas>
           </div>
 
-          <table class="categories-table">
+          <table class='categories-table'>
             <thead>
               <tr>
                 <th>Category</th>
@@ -318,10 +588,7 @@
               {{#each categories}}
                 <tr>
                   <td>
-                    <span
-                      class="category-color"
-                      style="background-color: {{color}};"
-                    ></span>
+                    <span class='category-color' style='background-color: {{color}};'></span>
                     {{name}}
                   </td>
                   <td>{{count}}</td>
@@ -334,29 +601,27 @@
       {{/if}}
 
       {{#if leaderboard}}
-        <div class="leaderboard-section">
+        <div class='leaderboard-section'>
           <h2>Top Contributors Leaderboard</h2>
-          <table class="leaderboard-table">
+          <table class='leaderboard-table'>
             <thead>
               <tr>
-                <th class="leaderboard-rank">Rank</th>
-                <th class="leaderboard-contributor">Contributor</th>
-                <th class="leaderboard-commits">Commits</th>
+                <th class='leaderboard-rank'>Rank</th>
+                <th class='leaderboard-contributor'>Contributor</th>
+                <th class='leaderboard-commits'>Commits</th>
               </tr>
             </thead>
             <tbody>
               {{#each leaderboard}}
                 <tr>
-                  <td class="leaderboard-rank">
-                    {{#if badge}}<span
-                        class="leaderboard-badge"
-                      >{{badge}}</span>{{/if}}{{rank}}
+                  <td class='leaderboard-rank'>
+                    {{#if badge}}<span class='leaderboard-badge'>{{badge}}</span>{{/if}}{{rank}}
                   </td>
-                  <td class="leaderboard-contributor">
+                  <td class='leaderboard-contributor'>
                     <div>{{author_name}}</div>
-                    <div class="contributor-email">{{author_email}}</div>
+                    <div class='contributor-email'>{{author_email}}</div>
                   </td>
-                  <td class="leaderboard-commits">{{commits}}</td>
+                  <td class='leaderboard-commits'>{{commits}}</td>
                 </tr>
               {{/each}}
             </tbody>
@@ -365,27 +630,27 @@
       {{/if}}
 
       {{#if prSummary}}
-        <div class="pr-section">
+        <div class='pr-section'>
           <h2>Weekly PR & Code Review Summary</h2>
 
-          <div class="pr-stats-grid">
-            <div class="pr-stat-card">
-              <div class="pr-stat-number">{{prSummary.total_created}}</div>
+          <div class='pr-stats-grid'>
+            <div class='pr-stat-card'>
+              <div class='pr-stat-number'>{{prSummary.total_created}}</div>
               <div>PRs Created</div>
             </div>
-            <div class="pr-stat-card">
-              <div class="pr-stat-number">{{prSummary.total_merged}}</div>
+            <div class='pr-stat-card'>
+              <div class='pr-stat-number'>{{prSummary.total_merged}}</div>
               <div>PRs Merged</div>
             </div>
-            <div class="pr-stat-card">
-              <div class="pr-stat-number">{{prSummary.total_reviewed}}</div>
+            <div class='pr-stat-card'>
+              <div class='pr-stat-number'>{{prSummary.total_reviewed}}</div>
               <div>Reviews Given</div>
             </div>
           </div>
 
           {{#if prSummary.prs_created.length}}
             <h3>Pull Requests Created</h3>
-            <table class="pr-table">
+            <table class='pr-table'>
               <thead>
                 <tr>
                   <th>PR</th>
@@ -398,16 +663,13 @@
               <tbody>
                 {{#each prSummary.prs_created}}
                   <tr>
-                    <td class="pr-number">#{{number}}</td>
-                    <td class="pr-title">
-                      <a href="{{url}}" target="_blank">{{title}}</a>
+                    <td class='pr-number'>#{{number}}</td>
+                    <td class='pr-title'>
+                      <a href='{{url}}' target='_blank'>{{title}}</a>
                     </td>
                     <td>{{author}}</td>
                     <td>
-                      <span
-                        class="pr-status"
-                        style="background-color: {{getPRStateColor this}};"
-                      >
+                      <span class='pr-status' style='background-color: {{getPRStateColor this}};'>
                         {{getPRStatus this}}
                       </span>
                     </td>
@@ -420,7 +682,7 @@
 
           {{#if prSummary.prs_merged.length}}
             <h3>Pull Requests Merged</h3>
-            <table class="pr-table">
+            <table class='pr-table'>
               <thead>
                 <tr>
                   <th>PR</th>
@@ -433,9 +695,9 @@
               <tbody>
                 {{#each prSummary.prs_merged}}
                   <tr>
-                    <td class="pr-number">#{{number}}</td>
-                    <td class="pr-title">
-                      <a href="{{url}}" target="_blank">{{title}}</a>
+                    <td class='pr-number'>#{{number}}</td>
+                    <td class='pr-title'>
+                      <a href='{{url}}' target='_blank'>{{title}}</a>
                     </td>
                     <td>{{author}}</td>
                     <td>{{merged_by}}</td>
@@ -447,26 +709,24 @@
           {{/if}}
 
           {{#if prSummary.reviewer_leaderboard.length}}
-            <div class="reviewer-leaderboard">
+            <div class='reviewer-leaderboard'>
               <h3>Top Code Reviewers</h3>
-              <table class="leaderboard-table">
+              <table class='leaderboard-table'>
                 <thead>
                   <tr>
-                    <th class="leaderboard-rank">Rank</th>
-                    <th class="leaderboard-contributor">Reviewer</th>
-                    <th class="review-stats">Reviews</th>
+                    <th class='leaderboard-rank'>Rank</th>
+                    <th class='leaderboard-contributor'>Reviewer</th>
+                    <th class='review-stats'>Reviews</th>
                   </tr>
                 </thead>
                 <tbody>
                   {{#each prSummary.reviewer_leaderboard}}
                     <tr>
-                      <td class="leaderboard-rank">
-                        {{#if badge}}<span
-                            class="leaderboard-badge"
-                          >{{badge}}</span>{{/if}}{{rank}}
+                      <td class='leaderboard-rank'>
+                        {{#if badge}}<span class='leaderboard-badge'>{{badge}}</span>{{/if}}{{rank}}
                       </td>
-                      <td class="leaderboard-contributor">{{reviewer}}</td>
-                      <td class="review-stats">{{reviews}}</td>
+                      <td class='leaderboard-contributor'>{{reviewer}}</td>
+                      <td class='review-stats'>{{reviews}}</td>
                     </tr>
                   {{/each}}
                 </tbody>
@@ -476,40 +736,136 @@
         </div>
       {{/if}}
 
+      {{#if branchTrends}}
+        <!-- Branch Trends Visualization -->
+        <div class='branch-trends-section'>
+          <h2>📈 Branch Activity Trends</h2>
+          <p class='section-description'>
+            Commit activity over time by branch. Contributors per branch also tracked.
+          </p>
+
+          <div class='chart-container'>
+            <canvas id='branchTrendsChart' width='800' height='400'></canvas>
+          </div>
+
+          <div class='trends-summary'>
+            <p><strong>📊 Analysis:</strong>
+              This visualization shows commit patterns across branches over the reporting period.</p>
+          </div>
+        </div>
+      {{/if}}
+
+      {{#if weeklyComparison}}
+        <div class='weekly-comparison-section'>
+          <h2>📊 This Week vs Last Week</h2>
+          <p class='section-description'>
+            Compare current week's activity with the previous week to track progress and trends.
+          </p>
+
+          <div class='comparison-metrics'>
+            <div class='metric-card'>
+              <h3>💻 Commits</h3>
+              <div class='metric-values'>
+                <span class='current-value'>{{weeklyComparison.commits.thisWeek}}</span>
+                <span class='vs-text'>vs</span>
+                <span class='previous-value'>{{weeklyComparison.commits.lastWeek}}</span>
+              </div>
+              <div class='metric-change {{weeklyComparison.commits.trend}}'>
+                {{#if (eq weeklyComparison.commits.trend 'up')}}↗{{/if}}
+                {{#if (eq weeklyComparison.commits.trend 'down')}}↘{{/if}}
+                {{#if (eq weeklyComparison.commits.trend 'same')}}→{{/if}}
+                {{#if
+                  (gt weeklyComparison.commits.change 0)
+                }}+{{/if}}{{weeklyComparison.commits.change}}
+                ({{#if
+                  (gt weeklyComparison.commits.percentageChange 0)
+                }}+{{/if}}{{weeklyComparison.commits.percentageChange}}%)
+              </div>
+            </div>
+
+            <div class='metric-card'>
+              <h3>👥 Contributors</h3>
+              <div class='metric-values'>
+                <span class='current-value'>{{weeklyComparison.contributors.thisWeek}}</span>
+                <span class='vs-text'>vs</span>
+                <span class='previous-value'>{{weeklyComparison.contributors.lastWeek}}</span>
+              </div>
+              <div class='metric-change {{weeklyComparison.contributors.trend}}'>
+                {{#if (eq weeklyComparison.contributors.trend 'up')}}↗{{/if}}
+                {{#if (eq weeklyComparison.contributors.trend 'down')}}↘{{/if}}
+                {{#if (eq weeklyComparison.contributors.trend 'same')}}→{{/if}}
+                {{#if
+                  (gt weeklyComparison.contributors.change 0)
+                }}+{{/if}}{{weeklyComparison.contributors.change}}
+              </div>
+            </div>
+          </div>
+
+          <div class='chart-container'>
+            <canvas id='weeklyComparisonChart' width='600' height='300'></canvas>
+          </div>
+
+          {{#if weeklyComparison.categories}}
+            <div class='category-comparison'>
+              <h3>📂 Category Breakdown</h3>
+              <div class='category-grid'>
+                {{#each weeklyComparison.categories}}
+                  <div class='category-item'>
+                    <span class='category-name'>{{name}}</span>
+                    <div class='category-values'>
+                      <span class='current'>{{thisWeek}}</span>
+                      <span class='vs'>vs</span>
+                      <span class='previous'>{{lastWeek}}</span>
+                      <span class='trend-icon {{trend}}'>
+                        {{#if (eq trend 'up')}}↗{{/if}}
+                        {{#if (eq trend 'down')}}↘{{/if}}
+                        {{#if (eq trend 'same')}}→{{/if}}
+                      </span>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/if}}
+
+          <div class='insights-section'>
+            <p><strong>🔍 Key Insights:</strong> {{weeklyComparison.insights}}</p>
+          </div>
+        </div>
+      {{/if}}
+
       {{#if aiSummary}}
-        <div class="ai-summary-section">
+        <div class='ai-summary-section'>
           <h2>📝 Weekly AI Summary</h2>
-          <div class="ai-summary-content">
+          <div class='ai-summary-content'>
             {{{aiSummary}}}
           </div>
         </div>
       {{/if}}
 
       {{#if branchGroups}}
-        <div class="branch-section">
+        <div class='branch-section'>
           <h2>Commits by Branch</h2>
           {{#each branchGroups}}
-            <div class="branch-group">
-              <div class="branch-header">
+            <div class='branch-group'>
+              <div class='branch-header'>
                 <h3>🌿 Branch:
                   {{branch}}
-                  <span class="branch-count">({{count}} commits)</span></h3>
+                  <span class='branch-count'>({{count}} commits)</span></h3>
               </div>
-              <div class="branch-commits">
+              <div class='branch-commits'>
                 {{#each commits}}
-                  <div class="commit">
-                    <div class="commit-message">
+                  <div class='commit'>
+                    <div class='commit-message'>
                       {{message}}
                       {{#if category}}
                         <span
-                          class="category-badge"
-                          style="background-color: {{getCategoryColor
-                            category
-                          }};"
+                          class='category-badge'
+                          style='background-color: {{getCategoryColor category}};'
                         >{{category}}</span>
                       {{/if}}
                     </div>
-                    <div class="commit-meta">
+                    <div class='commit-meta'>
                       <strong>Author:</strong>
                       {{author_name}}
                       ({{author_email}}) |
@@ -528,17 +884,17 @@
       {{else}}
         <h2>Recent Commits</h2>
         {{#each commits}}
-          <div class="commit">
-            <div class="commit-message">
+          <div class='commit'>
+            <div class='commit-message'>
               {{message}}
               {{#if category}}
                 <span
-                  class="category-badge"
-                  style="background-color: {{getCategoryColor category}};"
+                  class='category-badge'
+                  style='background-color: {{getCategoryColor category}};'
                 >{{category}}</span>
               {{/if}}
             </div>
-            <div class="commit-meta">
+            <div class='commit-meta'>
               <strong>Author:</strong>
               {{author_name}}
               ({{author_email}}) |
@@ -553,31 +909,29 @@
       {{/if}}
 
       {{#if branches}}
-        <div class="branch-section">
+        <div class='branch-section'>
           <h2>Branch-wise Commit Report</h2>
           {{#each branches}}
-            <div class="branch-group">
-              <div class="branch-header">
+            <div class='branch-group'>
+              <div class='branch-header'>
                 <h3>
                   {{name}}
-                  <span class="branch-count">Commits: {{commit_count}}</span>
+                  <span class='branch-count'>Commits: {{commit_count}}</span>
                 </h3>
               </div>
-              <div class="branch-commits">
+              <div class='branch-commits'>
                 {{#each commits}}
-                  <div class="commit">
-                    <div class="commit-message">
+                  <div class='commit'>
+                    <div class='commit-message'>
                       {{message}}
                       {{#if category}}
                         <span
-                          class="category-badge"
-                          style="background-color: {{getCategoryColor
-                            category
-                          }};"
+                          class='category-badge'
+                          style='background-color: {{getCategoryColor category}};'
                         >{{category}}</span>
                       {{/if}}
                     </div>
-                    <div class="commit-meta">
+                    <div class='commit-meta'>
                       <strong>Author:</strong>
                       {{author_name}}
                       ({{author_email}}) |
@@ -598,16 +952,44 @@
 
     {{#if categories}}
       <script>
-        const ctx = document.getElementById('categoryChart').getContext('2d');
-        const chartData =
-        {{{chartData}}}; new Chart(ctx, { type: 'doughnut', data: chartData,
-        options: { responsive: true, maintainAspectRatio: false, plugins: {
-        legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true
-        } }, tooltip: { callbacks: { label: function(context) { const label =
-        context.label || ''; const value = context.parsed; const total =
-        context.dataset.data.reduce((a, b) => a + b, 0); const percentage =
-        ((value / total) * 100).toFixed(1); return `${label}: ${value} commits
-        (${percentage}%)`; } } } }, cutout: '40%' } });
+        const ctx = document.getElementById('categoryChart').getContext('2d'); const chartData =
+        {{{chartData}}}; new Chart(ctx, { type: 'doughnut', data: chartData, options: { responsive:
+        true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {
+        padding: 20, usePointStyle: true } }, tooltip: { callbacks: { label: function(context) {
+        const label = context.label || ''; const value = context.parsed; const total =
+        context.dataset.data.reduce((a, b) => a + b, 0); const percentage = ((value / total) *
+        100).toFixed(1); return `${label}: ${value} commits (${percentage}%)`; } } } }, cutout:
+        '40%' } });
+      </script>
+    {{/if}}
+
+    {{#if branchTrends}}
+      <script>
+        const branchTrendsCtx = document.getElementById('branchTrendsChart'); if (branchTrendsCtx) {
+        new Chart(branchTrendsCtx, { type: 'line', data:
+        {{{json branchTrends}}}, options: { responsive: true, maintainAspectRatio: false, plugins: {
+        title: { display: true, text: 'Branch Commit Trends Over Time', font: { size: 16 } },
+        legend: { display: true, position: 'top' } }, scales: { y: { beginAtZero: true, title: {
+        display: true, text: 'Number of Commits' }, ticks: { stepSize: 1 } }, x: { title: { display:
+        true, text: 'Date' } } }, interaction: { intersect: false, mode: 'index' }, elements: {
+        line: { tension: 0.3 } } } }); }
+      </script>
+    {{/if}}
+
+    {{#if weeklyComparison}}
+      <script>
+        const weeklyComparisonCtx = document.getElementById('weeklyComparisonChart'); if
+        (weeklyComparisonCtx) { const comparisonData = { labels: ['Commits', 'Contributors'],
+        datasets: [ { label: 'This Week', data: [{{weeklyComparison.commits.thisWeek}},
+        {{weeklyComparison.contributors.thisWeek}}], backgroundColor: '#4ade80', borderColor:
+        '#22c55e', borderWidth: 2 }, { label: 'Last Week', data: [{{weeklyComparison.commits.lastWeek}},
+        {{weeklyComparison.contributors.lastWeek}}], backgroundColor: '#94a3b8', borderColor:
+        '#64748b', borderWidth: 2 } ] }; new Chart(weeklyComparisonCtx, { type: 'bar', data:
+        comparisonData, options: { responsive: true, maintainAspectRatio: false, plugins: { title: {
+        display: true, text: 'This Week vs Last Week Comparison', font: { size: 16 } }, legend: {
+        display: true, position: 'top' } }, scales: { y: { beginAtZero: true, title: { display:
+        true, text: 'Count' }, ticks: { stepSize: 1 } }, x: { title: { display: true, text:
+        'Metrics' } } }, interaction: { intersect: false, mode: 'index' } } }); }
       </script>
     {{/if}}
   </body>
